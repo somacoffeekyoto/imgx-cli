@@ -1,5 +1,6 @@
 import type { ImageProvider } from "../../core/provider.js";
 import { saveImage } from "../../core/storage.js";
+import { saveLastOutput } from "../../core/config.js";
 import * as out from "../output.js";
 
 interface GenerateArgs {
@@ -41,5 +42,6 @@ export async function runGenerate(
     paths.push(saved);
   }
 
+  saveLastOutput(paths);
   out.success({ filePaths: paths });
 }

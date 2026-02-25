@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0 (2026-02-26)
+
+### Added
+
+- `--last` (`-l`) flag for `edit` command — use the previous output as input automatically
+  - Works with both `generate` and `edit` outputs
+  - Enables iterative editing without manually specifying file paths
+- `.imgxrc` project config — place in project directory for project-level defaults
+  - Supports `defaults.model`, `defaults.outputDir`, `defaults.aspectRatio`, `defaults.resolution`, `defaults.provider`
+  - Shared via Git (no API keys — use `imgx config set api-key` or env vars)
+
+### Changed
+
+- Settings resolution expanded to 5 layers: CLI flags → env vars → `.imgxrc` → user config → provider defaults
+
 ## 0.3.0 (2026-02-26)
 
 ### Added

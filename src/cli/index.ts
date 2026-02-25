@@ -1,14 +1,14 @@
 import { parseArgs } from "node:util";
 import { initGemini } from "../providers/gemini/index.js";
 import { getProvider, listProviders } from "../core/registry.js";
-import { resolveDefault } from "../core/config.js";
+import { resolveDefault, loadLastOutput } from "../core/config.js";
 import { Capability } from "../core/types.js";
 import { runGenerate } from "./commands/generate.js";
 import { runEdit } from "./commands/edit.js";
 import { runConfig } from "./commands/config.js";
 import * as out from "./output.js";
 
-const VERSION = "0.3.0";
+const VERSION = "0.4.0";
 
 const HELP = `imgx v${VERSION} — AI image generation and editing CLI
 
@@ -29,6 +29,7 @@ Options:
   -p, --prompt <text>        Image description (required)
   -o, --output <path>        Output file path
   -i, --input <path>         Input image for editing (edit command)
+  -l, --last                 Use last output as input (edit command)
   -a, --aspect-ratio <ratio> Aspect ratio (e.g., 16:9, 1:1)
   -n, --count <number>       Number of images to generate
   -r, --resolution <size>    Resolution: 1K, 2K, 4K
@@ -37,6 +38,10 @@ Options:
   -d, --output-dir <dir>     Output directory
   -h, --help                 Show help
   -v, --version              Show version
+
+Project config (.imgxrc):
+  Place a .imgxrc file in your project directory to set defaults:
+  {"defaults":{"model":"gemini-2.5-flash-image","outputDir":"./images"}}
 
 Configuration:
   imgx config set api-key <key>   Save API key to config file
@@ -102,6 +107,7 @@ function main(): void {
       model: { type: "string", short: "m" },
       provider: { type: "string" },
       "output-dir": { type: "string", short: "d" },
+      last: { type: "boolean", short: "l" },
     },
     strict: false,
   });
@@ -170,9 +176,16 @@ function main(): void {
   }
 
   if (command === "edit") {
-    const inputImage = values.input as string | undefined;
+    let inputImage = values.input as string | undefined;
+    if (!inputImage && values.last) {
+      const lastPaths = loadLastOutput();
+      if (!lastPaths || lastPaths.length === 0) {
+        out.fail("No previous output found. Run generate or edit first, then use --last.");
+      }
+      inputImage = lastPaths[0];
+    }
     if (!inputImage) {
-      out.fail("--input (-i) is required for edit command");
+      out.fail("--input (-i) or --last (-l) is required for edit command");
     }
     runEdit(provider, { ...commonArgs, inputImage });
     return;

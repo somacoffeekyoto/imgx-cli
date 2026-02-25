@@ -2,6 +2,7 @@ import type { ImageProvider } from "../../core/provider.js";
 import { Capability } from "../../core/types.js";
 import { saveImage } from "../../core/storage.js";
 import { findProviderWith } from "../../core/registry.js";
+import { saveLastOutput } from "../../core/config.js";
 import * as out from "../output.js";
 
 interface EditArgs {
@@ -52,5 +53,6 @@ export async function runEdit(
     paths.push(saved);
   }
 
+  saveLastOutput(paths);
   out.success({ filePaths: paths });
 }

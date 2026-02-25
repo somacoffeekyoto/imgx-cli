@@ -51,6 +51,18 @@ imgx generate -p "A coffee cup on a wooden table, morning light" -o output.png
 imgx edit -i photo.png -p "Change the background to sunset" -o edited.png
 ```
 
+### Iterative editing with `--last`
+
+```bash
+imgx edit -i photo.png -p "Make the background darker"
+# → {"success": true, "filePaths": ["./imgx-a1b2c3d4.png"]}
+
+imgx edit --last -p "Add warm lighting"
+# Uses the previous output as input automatically
+
+imgx edit --last -p "Crop to 16:9" -o final.png
+```
+
 ### Options
 
 | Flag | Short | Description |
@@ -58,6 +70,7 @@ imgx edit -i photo.png -p "Change the background to sunset" -o edited.png
 | `--prompt` | `-p` | Image description or edit instruction (required) |
 | `--output` | `-o` | Output file path (auto-generated if omitted) |
 | `--input` | `-i` | Input image to edit (`edit` command only) |
+| `--last` | `-l` | Use last output as input (`edit` command only) |
 | `--aspect-ratio` | `-a` | `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2:3`, `3:2` |
 | `--resolution` | `-r` | `1K`, `2K`, `4K` |
 | `--count` | `-n` | Number of images to generate |
@@ -78,12 +91,31 @@ imgx config get api-key           # Show a specific setting (API key is masked)
 imgx config path                  # Show config file location
 ```
 
+### Project config (`.imgxrc`)
+
+Place a `.imgxrc` file in your project directory to set project-level defaults:
+
+```json
+{
+  "defaults": {
+    "model": "gemini-2.5-flash-image",
+    "outputDir": "./assets/images",
+    "aspectRatio": "16:9"
+  }
+}
+```
+
+Project config is shared via Git. Do not put API keys in `.imgxrc` — use `imgx config set api-key` or environment variables instead.
+
+### Settings resolution
+
 Settings are resolved in this order (first match wins):
 
 1. CLI flags (`--model`, `--output-dir`, etc.)
 2. Environment variables (`IMGX_MODEL`, `IMGX_OUTPUT_DIR`, etc.)
-3. Config file (`~/.config/imgx/config.json` or `%APPDATA%\imgx\config.json`)
-4. Provider defaults
+3. Project config (`.imgxrc` in current directory)
+4. User config (`~/.config/imgx/config.json` or `%APPDATA%\imgx\config.json`)
+5. Provider defaults
 
 ### Other commands
 

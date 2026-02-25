@@ -13,7 +13,10 @@
       "author": {
         "name": "SOMA COFFEE KYOTO"
       },
-      "source": ".",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/somacoffeekyoto/imgx-cli.git"
+      },
       "category": "design",
       "homepage": "https://github.com/somacoffeekyoto/imgx-cli"
     }

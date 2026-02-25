@@ -1,22 +1,31 @@
 import { build } from "esbuild";
-import { builtinModules } from "node:module";
 
-const nodeExternals = [
-  ...builtinModules,
-  ...builtinModules.map((m) => `node:${m}`),
-];
-
-await build({
-  entryPoints: ["build/cli/index.js"],
+const commonOptions = {
   bundle: true,
   platform: "node",
   target: "node18",
   format: "esm",
-  outfile: "dist/cli.bundle.js",
   banner: {
-    js: "#!/usr/bin/env node\nimport { createRequire } from 'module'; const require = createRequire(import.meta.url);",
+    js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",
   },
   external: [],
-});
+};
 
+// CLI bundle
+await build({
+  ...commonOptions,
+  entryPoints: ["build/cli/index.js"],
+  outfile: "dist/cli.bundle.js",
+  banner: {
+    js: "#!/usr/bin/env node\n" + commonOptions.banner.js,
+  },
+});
 console.log("Bundle created: dist/cli.bundle.js");
+
+// MCP server bundle
+await build({
+  ...commonOptions,
+  entryPoints: ["build/mcp/server.js"],
+  outfile: "dist/mcp.bundle.js",
+});
+console.log("Bundle created: dist/mcp.bundle.js");

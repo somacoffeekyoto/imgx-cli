@@ -39335,7 +39335,7 @@ async function runEdit(provider, args) {
 }
 
 // build/cli/index.js
-var VERSION2 = "0.1.0";
+var VERSION2 = "0.2.0";
 var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing CLI
 
 Commands:

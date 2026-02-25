@@ -1,10 +1,11 @@
 {
   "name": "imgx-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "AI image generation and editing CLI with provider abstraction",
   "type": "module",
   "bin": {
-    "imgx": "./dist/cli.bundle.js"
+    "imgx": "./dist/cli.bundle.js",
+    "imgx-mcp": "./dist/mcp.bundle.js"
   },
   "scripts": {
     "build": "tsc",
@@ -30,6 +31,7 @@
   },
   "files": [
     "dist/cli.bundle.js",
+    "dist/mcp.bundle.js",
     "LICENSE",
     "README.md",
     "CHANGELOG.md"
@@ -38,7 +40,8 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@google/genai": "^1.0.0"
+    "@google/genai": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.27.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

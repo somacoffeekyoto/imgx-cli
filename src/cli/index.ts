@@ -6,7 +6,7 @@ import { runGenerate } from "./commands/generate.js";
 import { runEdit } from "./commands/edit.js";
 import * as out from "./output.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 
 const HELP = `imgx v${VERSION} — AI image generation and editing CLI
 

@@ -87,17 +87,74 @@ All commands output JSON:
 
 This makes imgx suitable for scripting, CI pipelines, and integration with other tools.
 
+## MCP server
+
+imgx includes an MCP (Model Context Protocol) server, making it available to any MCP-compatible AI coding tool.
+
+### Exposed tools
+
+| Tool | Description |
+|------|-------------|
+| `generate_image` | Generate an image from a text prompt |
+| `edit_image` | Edit an existing image with text instructions |
+| `list_providers` | List available providers and capabilities |
+
+### Configuration
+
+Add to your tool's MCP config:
+
+**Claude Code** (`.mcp.json` / `claude mcp add`):
+
+```json
+{
+  "mcpServers": {
+    "imgx": {
+      "command": "node",
+      "args": ["/path/to/imgx-cli/dist/mcp.bundle.js"],
+      "env": { "GEMINI_API_KEY": "your-api-key" }
+    }
+  }
+}
+```
+
+**Gemini CLI** (`~/.gemini/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "imgx": {
+      "command": "node",
+      "args": ["/path/to/imgx-cli/dist/mcp.bundle.js"],
+      "env": { "GEMINI_API_KEY": "your-api-key" }
+    }
+  }
+}
+```
+
+**Codex CLI** (`.codex/config.toml`):
+
+```toml
+[mcp_servers.imgx]
+command = "node"
+args = ["/path/to/imgx-cli/dist/mcp.bundle.js"]
+env = { GEMINI_API_KEY = "your-api-key" }
+```
+
+The same configuration pattern works with Cursor, Windsurf, Continue.dev, Cline, Zed, and other MCP-compatible tools.
+
 ## Architecture
 
 imgx separates **model-independent** and **model-dependent** concerns:
 
 ```
-CLI (argument parsing, file I/O, output formatting)
- ↓
-Core (Capability enum, ImageProvider interface, provider registry)
+CLI (argument parsing, output formatting)    MCP server (tool definitions, stdio transport)
+ ↓                                            ↓
+Core (Capability enum, ImageProvider interface, provider registry, file I/O)
  ↓
 Provider (model-specific API calls, capability declarations)
 ```
+
+CLI and MCP server are two entry points into the same core. Both call the same provider functions.
 
 Each provider declares its supported capabilities. The CLI dynamically enables or disables options based on what the active provider supports. Adding a new provider means implementing the `ImageProvider` interface and registering it — no changes to the CLI layer.
 
@@ -127,11 +184,13 @@ imgx-cli doubles as a Claude Code plugin. The repository contains:
 .claude-plugin/
 ├── plugin.json          # Plugin manifest (name, version, author)
 └── marketplace.json     # Marketplace definition for plugin discovery
+.mcp.json                # MCP server config (auto-registered on plugin install)
 skills/
 └── image-generation/
     └── SKILL.md         # Skill instructions for Claude Code
 dist/
-└── cli.bundle.js        # Bundled CLI (tracked in git for plugin distribution)
+├── cli.bundle.js        # Bundled CLI (tracked in git for plugin distribution)
+└── mcp.bundle.js        # Bundled MCP server
 ```
 
 When installed as a plugin, Claude Code clones this repository and registers the skill. The skill instructs Claude Code to execute `dist/cli.bundle.js` via bash when image generation or editing is requested.
@@ -171,7 +230,10 @@ npm install
 npm run bundle    # TypeScript compile + esbuild bundle
 ```
 
-The build produces a single `dist/cli.bundle.js` file.
+The build produces two bundles:
+
+- `dist/cli.bundle.js` — CLI entry point
+- `dist/mcp.bundle.js` — MCP server entry point
 
 ## License
 

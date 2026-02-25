@@ -23,11 +23,19 @@ Requires Node.js 18+.
 
 ## Setup
 
-Set your API key as an environment variable:
+Save your API key using the built-in config command:
+
+```bash
+imgx config set api-key YOUR_GEMINI_API_KEY
+```
+
+This stores the key in `~/.config/imgx/config.json` (Linux/macOS) or `%APPDATA%\imgx\config.json` (Windows). Alternatively, set an environment variable:
 
 ```bash
 export GEMINI_API_KEY="your-api-key"
 ```
+
+Environment variables take precedence over the config file.
 
 ## Usage
 
@@ -57,6 +65,26 @@ imgx edit -i photo.png -p "Change the background to sunset" -o edited.png
 | `--provider` | | Provider name (default: `gemini`) |
 | `--output-dir` | `-d` | Output directory |
 
+### Configuration
+
+```bash
+imgx config set api-key <key>     # Save Gemini API key
+imgx config set model <name>      # Set default model
+imgx config set output-dir <dir>  # Set default output directory
+imgx config set aspect-ratio 16:9 # Set default aspect ratio
+imgx config set resolution 2K     # Set default resolution
+imgx config list                  # Show all settings
+imgx config get api-key           # Show a specific setting (API key is masked)
+imgx config path                  # Show config file location
+```
+
+Settings are resolved in this order (first match wins):
+
+1. CLI flags (`--model`, `--output-dir`, etc.)
+2. Environment variables (`IMGX_MODEL`, `IMGX_OUTPUT_DIR`, etc.)
+3. Config file (`~/.config/imgx/config.json` or `%APPDATA%\imgx\config.json`)
+4. Provider defaults
+
 ### Other commands
 
 ```bash
@@ -66,9 +94,11 @@ imgx capabilities   # Show detailed capabilities of current provider
 
 ### Environment variables
 
+Environment variables override config file settings.
+
 | Variable | Description |
 |----------|-------------|
-| `GEMINI_API_KEY` | Gemini API key (required for Gemini provider) |
+| `GEMINI_API_KEY` | Gemini API key (overrides `imgx config set api-key`) |
 | `IMGX_PROVIDER` | Default provider |
 | `IMGX_MODEL` | Default model |
 | `IMGX_OUTPUT_DIR` | Default output directory |
@@ -234,6 +264,35 @@ The build produces two bundles:
 
 - `dist/cli.bundle.js` — CLI entry point
 - `dist/mcp.bundle.js` — MCP server entry point
+
+## Uninstall
+
+### Claude Code plugin
+
+```
+/plugin uninstall imgx-cli@somacoffeekyoto-imgx-cli
+/plugin marketplace remove somacoffeekyoto-imgx-cli
+```
+
+### Standalone CLI
+
+```bash
+npm uninstall -g imgx-cli
+```
+
+### MCP server
+
+Remove the `imgx` entry from your tool's MCP configuration file.
+
+### Clean up configuration (optional)
+
+```bash
+# Linux / macOS
+rm -rf ~/.config/imgx/
+
+# Windows (PowerShell)
+Remove-Item -Recurse -Force "$env:APPDATA\imgx"
+```
 
 ## License
 

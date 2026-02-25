@@ -12132,8 +12132,8 @@ var require_util2 = __commonJS({
       }
     }
     function getWellKnownCertificateConfigFileLocation() {
-      const configDir = process.env.CLOUDSDK_CONFIG || (_isWindows() ? path2.join(process.env.APPDATA || "", CLOUDSDK_CONFIG_DIRECTORY) : path2.join(process.env.HOME || "", ".config", CLOUDSDK_CONFIG_DIRECTORY));
-      return path2.join(configDir, WELL_KNOWN_CERTIFICATE_CONFIG_FILE);
+      const configDir2 = process.env.CLOUDSDK_CONFIG || (_isWindows() ? path2.join(process.env.APPDATA || "", CLOUDSDK_CONFIG_DIRECTORY) : path2.join(process.env.HOME || "", ".config", CLOUDSDK_CONFIG_DIRECTORY));
+      return path2.join(configDir2, WELL_KNOWN_CERTIFICATE_CONFIG_FILE);
     }
     function _isWindows() {
       return os.platform().startsWith("win");
@@ -15976,25 +15976,25 @@ var require_certificatesubjecttokensupplier = __commonJS({
        * @returns An object containing the certificate and key paths.
        */
       async #getCertAndKeyPaths() {
-        const configPath = this.certificateConfigPath;
+        const configPath2 = this.certificateConfigPath;
         let fileContents;
         try {
-          fileContents = await fs3.promises.readFile(configPath, "utf8");
+          fileContents = await fs3.promises.readFile(configPath2, "utf8");
         } catch (err) {
-          throw new CertificateSourceUnavailableError(`Failed to read certificate config file at: ${configPath}`);
+          throw new CertificateSourceUnavailableError(`Failed to read certificate config file at: ${configPath2}`);
         }
         try {
           const config = JSON.parse(fileContents);
           const certPath = config?.cert_configs?.workload?.cert_path;
           const keyPath = config?.cert_configs?.workload?.key_path;
           if (!certPath || !keyPath) {
-            throw new InvalidConfigurationError(`Certificate config file (${configPath}) is missing required "cert_path" or "key_path" in the workload config.`);
+            throw new InvalidConfigurationError(`Certificate config file (${configPath2}) is missing required "cert_path" or "key_path" in the workload config.`);
           }
           return { certPath, keyPath };
         } catch (e2) {
           if (e2 instanceof InvalidConfigurationError)
             throw e2;
-          throw new InvalidConfigurationError(`Failed to parse certificate config from ${configPath}: ${e2.message}`);
+          throw new InvalidConfigurationError(`Failed to parse certificate config from ${configPath2}: ${e2.message}`);
         }
       }
       /**
@@ -22045,6 +22045,61 @@ function listProviders() {
 }
 function findProviderWith(capability) {
   return listProviders().filter((p) => p.info.capabilities.has(capability));
+}
+
+// build/core/config.js
+import { readFileSync, writeFileSync, mkdirSync, chmodSync } from "node:fs";
+import { join } from "node:path";
+import { homedir, platform } from "node:os";
+function configDir() {
+  if (platform() === "win32") {
+    return join(process.env.APPDATA || join(homedir(), "AppData", "Roaming"), "imgx");
+  }
+  return join(process.env.XDG_CONFIG_HOME || join(homedir(), ".config"), "imgx");
+}
+function configPath() {
+  return join(configDir(), "config.json");
+}
+function loadConfig() {
+  try {
+    const raw = readFileSync(configPath(), "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+function saveConfig(config) {
+  const dir = configDir();
+  mkdirSync(dir, { recursive: true });
+  const path2 = configPath();
+  writeFileSync(path2, JSON.stringify(config, null, 2) + "\n", "utf-8");
+  if (platform() !== "win32") {
+    try {
+      chmodSync(path2, 384);
+    } catch {
+    }
+  }
+}
+function resolveApiKey(providerName) {
+  if (providerName === "gemini" && process.env.GEMINI_API_KEY) {
+    return process.env.GEMINI_API_KEY;
+  }
+  const config = loadConfig();
+  return config.providers?.[providerName]?.apiKey;
+}
+function resolveDefault(key) {
+  const envMap = {
+    provider: process.env.IMGX_PROVIDER,
+    model: process.env.IMGX_MODEL,
+    outputDir: process.env.IMGX_OUTPUT_DIR
+  };
+  if (envMap[key])
+    return envMap[key];
+  const config = loadConfig();
+  return config.defaults?.[key];
+}
+function getConfigPath() {
+  return configPath();
 }
 
 // node_modules/@google/genai/dist/node/index.mjs
@@ -36077,24 +36132,24 @@ var normalizeArch = (arch) => {
     return `other:${arch}`;
   return "unknown";
 };
-var normalizePlatform = (platform) => {
-  platform = platform.toLowerCase();
-  if (platform.includes("ios"))
+var normalizePlatform = (platform2) => {
+  platform2 = platform2.toLowerCase();
+  if (platform2.includes("ios"))
     return "iOS";
-  if (platform === "android")
+  if (platform2 === "android")
     return "Android";
-  if (platform === "darwin")
+  if (platform2 === "darwin")
     return "MacOS";
-  if (platform === "win32")
+  if (platform2 === "win32")
     return "Windows";
-  if (platform === "freebsd")
+  if (platform2 === "freebsd")
     return "FreeBSD";
-  if (platform === "openbsd")
+  if (platform2 === "openbsd")
     return "OpenBSD";
-  if (platform === "linux")
+  if (platform2 === "linux")
     return "Linux";
-  if (platform)
-    return `Other:${platform}`;
+  if (platform2)
+    return `Other:${platform2}`;
   return "Unknown";
 };
 var _platformHeaders;
@@ -39125,7 +39180,7 @@ function getApiKeyFromEnv() {
 }
 
 // build/core/storage.js
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync as readFileSync2, writeFileSync as writeFileSync2, mkdirSync as mkdirSync2 } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 var MIME_TO_EXT = {
@@ -39135,7 +39190,7 @@ var MIME_TO_EXT = {
 };
 function readImageAsBase64(filePath) {
   const absPath = resolve(filePath);
-  const buffer = readFileSync(absPath);
+  const buffer = readFileSync2(absPath);
   const ext = filePath.split(".").pop()?.toLowerCase();
   const mimeType = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : ext === "webp" ? "image/webp" : "image/png";
   return { data: buffer.toString("base64"), mimeType };
@@ -39143,8 +39198,8 @@ function readImageAsBase64(filePath) {
 function saveImage(image, outputPath, outputDir) {
   const ext = MIME_TO_EXT[image.mimeType] || ".png";
   const filePath = outputPath ? resolve(outputPath) : resolve(outputDir || ".", `imgx-${randomUUID().slice(0, 8)}${ext}`);
-  mkdirSync(dirname(filePath), { recursive: true });
-  writeFileSync(filePath, image.data);
+  mkdirSync2(dirname(filePath), { recursive: true });
+  writeFileSync2(filePath, image.data);
   return filePath;
 }
 
@@ -39272,7 +39327,7 @@ var GeminiProvider = class {
 
 // build/providers/gemini/index.js
 function initGemini() {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = resolveApiKey("gemini");
   if (!apiKey)
     return;
   registerProvider(new GeminiProvider(apiKey));
@@ -39334,19 +39389,137 @@ async function runEdit(provider, args) {
   success({ filePaths: paths });
 }
 
+// build/cli/commands/config.js
+function runConfig(args) {
+  const sub = args[0];
+  if (!sub || sub === "list") {
+    showAll();
+    return;
+  }
+  if (sub === "set") {
+    const key = args[1];
+    const value = args[2];
+    if (!key || !value) {
+      fail("Usage: imgx config set <key> <value>\n  Keys: api-key, provider, model, output-dir, aspect-ratio, resolution");
+    }
+    setKey(key, value);
+    return;
+  }
+  if (sub === "get") {
+    const key = args[1];
+    if (!key) {
+      fail("Usage: imgx config get <key>");
+    }
+    getKey(key);
+    return;
+  }
+  if (sub === "path") {
+    success({ path: getConfigPath() });
+    return;
+  }
+  fail(`Unknown config subcommand: ${sub}. Use: list, set, get, path`);
+}
+function setKey(key, value) {
+  const config = loadConfig();
+  switch (key) {
+    case "api-key": {
+      if (!config.providers)
+        config.providers = {};
+      if (!config.providers.gemini)
+        config.providers.gemini = {};
+      config.providers.gemini.apiKey = value;
+      break;
+    }
+    case "provider": {
+      if (!config.defaults)
+        config.defaults = {};
+      config.defaults.provider = value;
+      break;
+    }
+    case "model": {
+      if (!config.defaults)
+        config.defaults = {};
+      config.defaults.model = value;
+      break;
+    }
+    case "output-dir": {
+      if (!config.defaults)
+        config.defaults = {};
+      config.defaults.outputDir = value;
+      break;
+    }
+    case "aspect-ratio": {
+      if (!config.defaults)
+        config.defaults = {};
+      config.defaults.aspectRatio = value;
+      break;
+    }
+    case "resolution": {
+      if (!config.defaults)
+        config.defaults = {};
+      config.defaults.resolution = value;
+      break;
+    }
+    default:
+      fail(`Unknown key: ${key}. Valid keys: api-key, provider, model, output-dir, aspect-ratio, resolution`);
+  }
+  saveConfig(config);
+  success({ key, status: "saved" });
+}
+function getKey(key) {
+  const config = loadConfig();
+  switch (key) {
+    case "api-key": {
+      const val = config.providers?.gemini?.apiKey;
+      const masked = val ? val.slice(0, 6) + "..." + val.slice(-4) : void 0;
+      success({ key, value: masked ?? null });
+      return;
+    }
+    case "provider":
+      success({ key, value: config.defaults?.provider ?? null });
+      return;
+    case "model":
+      success({ key, value: config.defaults?.model ?? null });
+      return;
+    case "output-dir":
+      success({ key, value: config.defaults?.outputDir ?? null });
+      return;
+    case "aspect-ratio":
+      success({ key, value: config.defaults?.aspectRatio ?? null });
+      return;
+    case "resolution":
+      success({ key, value: config.defaults?.resolution ?? null });
+      return;
+    default:
+      fail(`Unknown key: ${key}. Valid keys: api-key, provider, model, output-dir, aspect-ratio, resolution`);
+  }
+}
+function showAll() {
+  const config = loadConfig();
+  const hasApiKey = !!config.providers?.gemini?.apiKey;
+  success({
+    configPath: getConfigPath(),
+    apiKey: hasApiKey ? "(set)" : "(not set)",
+    defaults: config.defaults ?? {}
+  });
+}
+
 // build/cli/index.js
-var VERSION2 = "0.2.0";
+var VERSION2 = "0.3.0";
 var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing CLI
 
 Commands:
-  generate    Generate image from text prompt
-  edit        Edit existing image with text instructions
-  providers   List available providers
-  capabilities Show capabilities of current provider
+  generate      Generate image from text prompt
+  edit          Edit existing image with text instructions
+  providers     List available providers
+  capabilities  Show capabilities of current provider
+  config        Manage configuration (API keys, defaults)
 
 Usage:
   imgx generate -p "prompt" -o "./output.png"
   imgx edit -i "./input.png" -p "change background" -o "./output.png"
+  imgx config set api-key <your-gemini-api-key>
+  imgx config list
 
 Options:
   -p, --prompt <text>        Image description (required)
@@ -39361,7 +39534,13 @@ Options:
   -h, --help                 Show help
   -v, --version              Show version
 
-Environment:
+Configuration:
+  imgx config set api-key <key>   Save API key to config file
+  imgx config set model <name>    Set default model
+  imgx config list                Show all settings
+  imgx config path                Show config file location
+
+Environment variables (override config file):
   GEMINI_API_KEY             Gemini API key
   IMGX_PROVIDER              Default provider
   IMGX_MODEL                 Default model
@@ -39378,6 +39557,10 @@ function main() {
   if (command === "-v" || command === "--version") {
     console.log(VERSION2);
     process.exit(0);
+  }
+  if (command === "config") {
+    runConfig(args.slice(1));
+    return;
   }
   if (command === "providers") {
     const all = listProviders();
@@ -39408,13 +39591,13 @@ function main() {
     },
     strict: false
   });
-  const providerName = values.provider || process.env.IMGX_PROVIDER || "gemini";
+  const providerName = values.provider || resolveDefault("provider") || "gemini";
   const provider = getProvider(providerName);
   if (!provider) {
     const available = listProviders().map((p) => p.info.name).join(", ");
     fail(`Provider "${providerName}" not available.` + (available ? ` Available: ${available}` : " Set GEMINI_API_KEY to enable Gemini."));
   }
-  const model = values.model || process.env.IMGX_MODEL || void 0;
+  const model = values.model || resolveDefault("model") || void 0;
   if (command === "capabilities") {
     success({
       provider: provider.info.name,
@@ -39432,9 +39615,9 @@ function main() {
   const commonArgs = {
     prompt,
     output: values.output,
-    outputDir: values["output-dir"] || process.env.IMGX_OUTPUT_DIR || void 0,
-    aspectRatio: values["aspect-ratio"],
-    resolution: values.resolution,
+    outputDir: values["output-dir"] || resolveDefault("outputDir") || void 0,
+    aspectRatio: values["aspect-ratio"] || resolveDefault("aspectRatio") || void 0,
+    resolution: values.resolution || resolveDefault("resolution") || void 0,
     model,
     count: values.count ? parseInt(values.count, 10) : void 0
   };

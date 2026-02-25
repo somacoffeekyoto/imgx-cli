@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.3.0 (2026-02-26)
+
+### Added
+
+- `imgx config` command — manage API keys and default settings via config file
+  - `config set api-key <key>` — save Gemini API key (no more manual environment variable setup)
+  - `config set model|provider|output-dir|aspect-ratio|resolution <value>` — set defaults
+  - `config list` — show all settings
+  - `config get <key>` — show a specific setting (API key is masked)
+  - `config path` — show config file location
+- Config file at `~/.config/imgx/config.json` (Linux/macOS) or `%APPDATA%\imgx\config.json` (Windows)
+- Settings resolution: CLI flags → environment variables → config file → provider defaults
+- Uninstall instructions in README (plugin, npm, MCP, config cleanup)
+
+### Changed
+
+- API key resolution: environment variable → config file (env var still takes precedence)
+- Default model, provider, output-dir, aspect-ratio, resolution are now configurable via `imgx config set`
+
 ## 0.2.0 (2026-02-26)
 
 ### Added

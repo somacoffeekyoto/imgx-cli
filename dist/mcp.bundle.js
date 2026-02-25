@@ -18900,8 +18900,8 @@ var require_util3 = __commonJS({
       }
     }
     function getWellKnownCertificateConfigFileLocation() {
-      const configDir = process.env.CLOUDSDK_CONFIG || (_isWindows() ? path2.join(process.env.APPDATA || "", CLOUDSDK_CONFIG_DIRECTORY) : path2.join(process.env.HOME || "", ".config", CLOUDSDK_CONFIG_DIRECTORY));
-      return path2.join(configDir, WELL_KNOWN_CERTIFICATE_CONFIG_FILE);
+      const configDir2 = process.env.CLOUDSDK_CONFIG || (_isWindows() ? path2.join(process.env.APPDATA || "", CLOUDSDK_CONFIG_DIRECTORY) : path2.join(process.env.HOME || "", ".config", CLOUDSDK_CONFIG_DIRECTORY));
+      return path2.join(configDir2, WELL_KNOWN_CERTIFICATE_CONFIG_FILE);
     }
     function _isWindows() {
       return os.platform().startsWith("win");
@@ -22744,25 +22744,25 @@ var require_certificatesubjecttokensupplier = __commonJS({
        * @returns An object containing the certificate and key paths.
        */
       async #getCertAndKeyPaths() {
-        const configPath = this.certificateConfigPath;
+        const configPath2 = this.certificateConfigPath;
         let fileContents;
         try {
-          fileContents = await fs3.promises.readFile(configPath, "utf8");
+          fileContents = await fs3.promises.readFile(configPath2, "utf8");
         } catch (err) {
-          throw new CertificateSourceUnavailableError(`Failed to read certificate config file at: ${configPath}`);
+          throw new CertificateSourceUnavailableError(`Failed to read certificate config file at: ${configPath2}`);
         }
         try {
           const config2 = JSON.parse(fileContents);
           const certPath = config2?.cert_configs?.workload?.cert_path;
           const keyPath = config2?.cert_configs?.workload?.key_path;
           if (!certPath || !keyPath) {
-            throw new InvalidConfigurationError(`Certificate config file (${configPath}) is missing required "cert_path" or "key_path" in the workload config.`);
+            throw new InvalidConfigurationError(`Certificate config file (${configPath2}) is missing required "cert_path" or "key_path" in the workload config.`);
           }
           return { certPath, keyPath };
         } catch (e2) {
           if (e2 instanceof InvalidConfigurationError)
             throw e2;
-          throw new InvalidConfigurationError(`Failed to parse certificate config from ${configPath}: ${e2.message}`);
+          throw new InvalidConfigurationError(`Failed to parse certificate config from ${configPath2}: ${e2.message}`);
         }
       }
       /**
@@ -52099,6 +52099,35 @@ function listProviders() {
   return Array.from(providers.values());
 }
 
+// build/core/config.js
+import { readFileSync, writeFileSync, mkdirSync, chmodSync } from "node:fs";
+import { join } from "node:path";
+import { homedir, platform } from "node:os";
+function configDir() {
+  if (platform() === "win32") {
+    return join(process.env.APPDATA || join(homedir(), "AppData", "Roaming"), "imgx");
+  }
+  return join(process.env.XDG_CONFIG_HOME || join(homedir(), ".config"), "imgx");
+}
+function configPath() {
+  return join(configDir(), "config.json");
+}
+function loadConfig() {
+  try {
+    const raw = readFileSync(configPath(), "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+function resolveApiKey(providerName) {
+  if (providerName === "gemini" && process.env.GEMINI_API_KEY) {
+    return process.env.GEMINI_API_KEY;
+  }
+  const config2 = loadConfig();
+  return config2.providers?.[providerName]?.apiKey;
+}
+
 // node_modules/@google/genai/dist/node/index.mjs
 var import_p_retry = __toESM(require_p_retry(), 1);
 var import_google_auth_library = __toESM(require_src5(), 1);
@@ -66129,24 +66158,24 @@ var normalizeArch = (arch) => {
     return `other:${arch}`;
   return "unknown";
 };
-var normalizePlatform = (platform) => {
-  platform = platform.toLowerCase();
-  if (platform.includes("ios"))
+var normalizePlatform = (platform2) => {
+  platform2 = platform2.toLowerCase();
+  if (platform2.includes("ios"))
     return "iOS";
-  if (platform === "android")
+  if (platform2 === "android")
     return "Android";
-  if (platform === "darwin")
+  if (platform2 === "darwin")
     return "MacOS";
-  if (platform === "win32")
+  if (platform2 === "win32")
     return "Windows";
-  if (platform === "freebsd")
+  if (platform2 === "freebsd")
     return "FreeBSD";
-  if (platform === "openbsd")
+  if (platform2 === "openbsd")
     return "OpenBSD";
-  if (platform === "linux")
+  if (platform2 === "linux")
     return "Linux";
-  if (platform)
-    return `Other:${platform}`;
+  if (platform2)
+    return `Other:${platform2}`;
   return "Unknown";
 };
 var _platformHeaders;
@@ -69177,7 +69206,7 @@ function getApiKeyFromEnv() {
 }
 
 // build/core/storage.js
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync as readFileSync2, writeFileSync as writeFileSync2, mkdirSync as mkdirSync2 } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 var MIME_TO_EXT = {
@@ -69187,7 +69216,7 @@ var MIME_TO_EXT = {
 };
 function readImageAsBase64(filePath) {
   const absPath = resolve(filePath);
-  const buffer = readFileSync(absPath);
+  const buffer = readFileSync2(absPath);
   const ext = filePath.split(".").pop()?.toLowerCase();
   const mimeType = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : ext === "webp" ? "image/webp" : "image/png";
   return { data: buffer.toString("base64"), mimeType };
@@ -69195,8 +69224,8 @@ function readImageAsBase64(filePath) {
 function saveImage(image, outputPath, outputDir) {
   const ext = MIME_TO_EXT[image.mimeType] || ".png";
   const filePath = outputPath ? resolve(outputPath) : resolve(outputDir || ".", `imgx-${randomUUID().slice(0, 8)}${ext}`);
-  mkdirSync(dirname(filePath), { recursive: true });
-  writeFileSync(filePath, image.data);
+  mkdirSync2(dirname(filePath), { recursive: true });
+  writeFileSync2(filePath, image.data);
   return filePath;
 }
 
@@ -69324,7 +69353,7 @@ var GeminiProvider = class {
 
 // build/providers/gemini/index.js
 function initGemini() {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = resolveApiKey("gemini");
   if (!apiKey)
     return;
   registerProvider(new GeminiProvider(apiKey));
@@ -69333,7 +69362,7 @@ function initGemini() {
 // build/mcp/server.js
 var server = new McpServer({
   name: "imgx",
-  version: "0.2.0"
+  version: "0.3.0"
 });
 initGemini();
 function resolveProvider(providerName) {

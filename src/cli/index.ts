@@ -1,24 +1,29 @@
 import { parseArgs } from "node:util";
 import { initGemini } from "../providers/gemini/index.js";
 import { getProvider, listProviders } from "../core/registry.js";
+import { resolveDefault } from "../core/config.js";
 import { Capability } from "../core/types.js";
 import { runGenerate } from "./commands/generate.js";
 import { runEdit } from "./commands/edit.js";
+import { runConfig } from "./commands/config.js";
 import * as out from "./output.js";
 
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 
 const HELP = `imgx v${VERSION} — AI image generation and editing CLI
 
 Commands:
-  generate    Generate image from text prompt
-  edit        Edit existing image with text instructions
-  providers   List available providers
-  capabilities Show capabilities of current provider
+  generate      Generate image from text prompt
+  edit          Edit existing image with text instructions
+  providers     List available providers
+  capabilities  Show capabilities of current provider
+  config        Manage configuration (API keys, defaults)
 
 Usage:
   imgx generate -p "prompt" -o "./output.png"
   imgx edit -i "./input.png" -p "change background" -o "./output.png"
+  imgx config set api-key <your-gemini-api-key>
+  imgx config list
 
 Options:
   -p, --prompt <text>        Image description (required)
@@ -33,7 +38,13 @@ Options:
   -h, --help                 Show help
   -v, --version              Show version
 
-Environment:
+Configuration:
+  imgx config set api-key <key>   Save API key to config file
+  imgx config set model <name>    Set default model
+  imgx config list                Show all settings
+  imgx config path                Show config file location
+
+Environment variables (override config file):
   GEMINI_API_KEY             Gemini API key
   IMGX_PROVIDER              Default provider
   IMGX_MODEL                 Default model
@@ -55,6 +66,11 @@ function main(): void {
   if (command === "-v" || command === "--version") {
     console.log(VERSION);
     process.exit(0);
+  }
+
+  if (command === "config") {
+    runConfig(args.slice(1));
+    return;
   }
 
   if (command === "providers") {
@@ -90,10 +106,10 @@ function main(): void {
     strict: false,
   });
 
-  // プロバイダ解決
+  // プロバイダ解決（CLI フラグ → 環境変数 → config → デフォルト）
   const providerName =
     (values.provider as string) ||
-    process.env.IMGX_PROVIDER ||
+    resolveDefault("provider") ||
     "gemini";
 
   const provider = getProvider(providerName);
@@ -105,10 +121,10 @@ function main(): void {
     );
   }
 
-  // モデル解決
+  // モデル解決（CLI フラグ → 環境変数 → config → プロバイダデフォルト）
   const model =
     (values.model as string) ||
-    process.env.IMGX_MODEL ||
+    resolveDefault("model") ||
     undefined;
 
   // capabilities コマンド
@@ -134,10 +150,16 @@ function main(): void {
     output: values.output as string | undefined,
     outputDir:
       (values["output-dir"] as string) ||
-      process.env.IMGX_OUTPUT_DIR ||
+      resolveDefault("outputDir") ||
       undefined,
-    aspectRatio: values["aspect-ratio"] as string | undefined,
-    resolution: values.resolution as string | undefined,
+    aspectRatio:
+      (values["aspect-ratio"] as string) ||
+      resolveDefault("aspectRatio") ||
+      undefined,
+    resolution:
+      (values.resolution as string) ||
+      resolveDefault("resolution") ||
+      undefined,
     model,
     count: values.count ? parseInt(values.count as string, 10) : undefined,
   };

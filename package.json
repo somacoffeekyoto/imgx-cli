@@ -1,0 +1,34 @@
+{
+  "name": "imgx-cli",
+  "version": "0.1.0",
+  "description": "AI image generation and editing CLI with provider abstraction",
+  "type": "module",
+  "bin": {
+    "imgx": "./dist/cli.bundle.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "bundle": "npm run build && node esbuild.config.js",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "image-generation",
+    "image-editing",
+    "gemini",
+    "ai",
+    "cli"
+  ],
+  "author": "SOMA COFFEE KYOTO",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.27.0",
+    "typescript": "^5.4.0"
+  }
+}

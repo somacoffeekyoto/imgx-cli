@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "somacoffeekyoto-imgx-cli",
+  "description": "AI image generation and editing tools by SOMA COFFEE KYOTO",
+  "owner": {
+    "name": "SOMA COFFEE KYOTO"
+  },
+  "plugins": [
+    {
+      "name": "imgx-cli",
+      "description": "AI image generation and editing CLI with provider abstraction",
+      "version": "0.1.0",
+      "author": {
+        "name": "SOMA COFFEE KYOTO"
+      },
+      "source": ".",
+      "category": "design",
+      "homepage": "https://github.com/somacoffeekyoto/imgx-cli"
+    }
+  ]
+}

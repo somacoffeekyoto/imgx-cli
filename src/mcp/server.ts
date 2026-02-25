@@ -4,11 +4,12 @@ import { z } from "zod";
 import { initGemini } from "../providers/gemini/index.js";
 import { getProvider, listProviders } from "../core/registry.js";
 import { saveImage } from "../core/storage.js";
+import { saveLastOutput, loadLastOutput } from "../core/config.js";
 import type { GenerateInput, EditInput } from "../core/types.js";
 
 const server = new McpServer({
   name: "imgx",
-  version: "0.4.0",
+  version: "0.5.0",
 });
 
 // プロバイダ初期化
@@ -70,6 +71,7 @@ server.tool(
         paths.push(saved);
       }
 
+      saveLastOutput(paths);
       return {
         content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: paths }) }],
       };
@@ -120,8 +122,66 @@ server.tool(
       }
 
       const saved = saveImage(result.images[0], args.output, args.output_dir);
+      saveLastOutput([saved]);
       return {
         content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved] }) }],
+      };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { content: [{ type: "text", text: `Error: ${msg}` }] };
+    }
+  }
+);
+
+// --- edit_last ---
+
+server.tool(
+  "edit_last",
+  "Edit the last generated/edited image with new text instructions. Uses the output of the previous generate_image or edit_image call as input.",
+  {
+    prompt: z.string().describe("Edit instruction"),
+    output: z.string().optional().describe("Output file path"),
+    output_dir: z.string().optional().describe("Output directory"),
+    aspect_ratio: z
+      .enum(["1:1", "2:3", "3:2", "3:4", "4:3", "9:16", "16:9"])
+      .optional()
+      .describe("Aspect ratio"),
+    resolution: z.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
+    model: z.string().optional().describe("Model name"),
+    provider: z.string().optional().describe("Provider name"),
+  },
+  async (args) => {
+    try {
+      const lastPaths = loadLastOutput();
+      if (!lastPaths || lastPaths.length === 0) {
+        return {
+          content: [{ type: "text", text: "Error: No previous output found. Run generate_image or edit_image first." }],
+        };
+      }
+
+      const prov = resolveProvider(args.provider);
+      if (!prov.edit) {
+        return {
+          content: [{ type: "text", text: `Error: Provider "${prov.info.name}" does not support image editing` }],
+        };
+      }
+
+      const input: EditInput = {
+        prompt: args.prompt,
+        inputImage: lastPaths[0],
+        aspectRatio: args.aspect_ratio,
+        resolution: args.resolution,
+      };
+
+      const result = await prov.edit(input, args.model);
+      if (!result.success || result.images.length === 0) {
+        return { content: [{ type: "text", text: `Error: ${result.error || "Edit failed"}` }] };
+      }
+
+      const saved = saveImage(result.images[0], args.output, args.output_dir);
+      saveLastOutput([saved]);
+      return {
+        content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved], inputUsed: lastPaths[0] }) }],
       };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);

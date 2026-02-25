@@ -2,19 +2,21 @@ import { parseArgs } from "node:util";
 import { initGemini } from "../providers/gemini/index.js";
 import { getProvider, listProviders } from "../core/registry.js";
 import { resolveDefault, loadLastOutput } from "../core/config.js";
+import { runInit } from "./commands/init.js";
 import { Capability } from "../core/types.js";
 import { runGenerate } from "./commands/generate.js";
 import { runEdit } from "./commands/edit.js";
 import { runConfig } from "./commands/config.js";
 import * as out from "./output.js";
 
-const VERSION = "0.4.0";
+const VERSION = "0.5.0";
 
 const HELP = `imgx v${VERSION} — AI image generation and editing CLI
 
 Commands:
   generate      Generate image from text prompt
   edit          Edit existing image with text instructions
+  init          Create .imgxrc project config in current directory
   providers     List available providers
   capabilities  Show capabilities of current provider
   config        Manage configuration (API keys, defaults)
@@ -75,6 +77,11 @@ function main(): void {
 
   if (command === "config") {
     runConfig(args.slice(1));
+    return;
+  }
+
+  if (command === "init") {
+    runInit();
     return;
   }
 

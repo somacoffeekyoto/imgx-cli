@@ -93,7 +93,14 @@ imgx config path                  # Show config file location
 
 ### Project config (`.imgxrc`)
 
-Place a `.imgxrc` file in your project directory to set project-level defaults:
+Generate a template with `imgx init`:
+
+```bash
+imgx init
+# → creates .imgxrc in current directory
+```
+
+Or create manually. Place a `.imgxrc` file in your project directory to set project-level defaults:
 
 ```json
 {
@@ -159,6 +166,7 @@ imgx includes an MCP (Model Context Protocol) server, making it available to any
 |------|-------------|
 | `generate_image` | Generate an image from a text prompt |
 | `edit_image` | Edit an existing image with text instructions |
+| `edit_last` | Edit the last generated/edited image (no input path needed) |
 | `list_providers` | List available providers and capabilities |
 
 ### Configuration

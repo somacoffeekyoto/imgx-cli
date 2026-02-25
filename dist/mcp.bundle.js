@@ -52127,6 +52127,21 @@ function resolveApiKey(providerName) {
   const config2 = loadConfig();
   return config2.providers?.[providerName]?.apiKey;
 }
+function saveLastOutput(filePaths) {
+  const dir = configDir();
+  mkdirSync(dir, { recursive: true });
+  const path2 = join(dir, "last-output.json");
+  writeFileSync(path2, JSON.stringify({ filePaths, timestamp: Date.now() }) + "\n", "utf-8");
+}
+function loadLastOutput() {
+  try {
+    const raw = readFileSync(join(configDir(), "last-output.json"), "utf-8");
+    const data = JSON.parse(raw);
+    return data.filePaths;
+  } catch {
+    return void 0;
+  }
+}
 
 // node_modules/@google/genai/dist/node/index.mjs
 var import_p_retry = __toESM(require_p_retry(), 1);
@@ -69362,7 +69377,7 @@ function initGemini() {
 // build/mcp/server.js
 var server = new McpServer({
   name: "imgx",
-  version: "0.4.0"
+  version: "0.5.0"
 });
 initGemini();
 function resolveProvider(providerName) {
@@ -69402,6 +69417,7 @@ server.tool("generate_image", "Generate an image from a text prompt", {
       const saved = saveImage(result.images[i2], outputPath, args.output_dir);
       paths.push(saved);
     }
+    saveLastOutput(paths);
     return {
       content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: paths }) }]
     };
@@ -69438,8 +69454,51 @@ server.tool("edit_image", "Edit an existing image with text instructions", {
       return { content: [{ type: "text", text: `Error: ${result.error || "Edit failed"}` }] };
     }
     const saved = saveImage(result.images[0], args.output, args.output_dir);
+    saveLastOutput([saved]);
     return {
       content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved] }) }]
+    };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { content: [{ type: "text", text: `Error: ${msg}` }] };
+  }
+});
+server.tool("edit_last", "Edit the last generated/edited image with new text instructions. Uses the output of the previous generate_image or edit_image call as input.", {
+  prompt: external_exports3.string().describe("Edit instruction"),
+  output: external_exports3.string().optional().describe("Output file path"),
+  output_dir: external_exports3.string().optional().describe("Output directory"),
+  aspect_ratio: external_exports3.enum(["1:1", "2:3", "3:2", "3:4", "4:3", "9:16", "16:9"]).optional().describe("Aspect ratio"),
+  resolution: external_exports3.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
+  model: external_exports3.string().optional().describe("Model name"),
+  provider: external_exports3.string().optional().describe("Provider name")
+}, async (args) => {
+  try {
+    const lastPaths = loadLastOutput();
+    if (!lastPaths || lastPaths.length === 0) {
+      return {
+        content: [{ type: "text", text: "Error: No previous output found. Run generate_image or edit_image first." }]
+      };
+    }
+    const prov = resolveProvider(args.provider);
+    if (!prov.edit) {
+      return {
+        content: [{ type: "text", text: `Error: Provider "${prov.info.name}" does not support image editing` }]
+      };
+    }
+    const input = {
+      prompt: args.prompt,
+      inputImage: lastPaths[0],
+      aspectRatio: args.aspect_ratio,
+      resolution: args.resolution
+    };
+    const result = await prov.edit(input, args.model);
+    if (!result.success || result.images.length === 0) {
+      return { content: [{ type: "text", text: `Error: ${result.error || "Edit failed"}` }] };
+    }
+    const saved = saveImage(result.images[0], args.output, args.output_dir);
+    saveLastOutput([saved]);
+    return {
+      content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved], inputUsed: lastPaths[0] }) }]
     };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

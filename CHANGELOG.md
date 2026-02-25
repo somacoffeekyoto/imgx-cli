@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2026-02-26)
+
+### Added
+
+- `edit_last` MCP tool — edit the last generated/edited image via MCP without specifying input path
+- `imgx init` command — create `.imgxrc` project config template in current directory
+- MCP server now tracks last output (shared with CLI `--last` flag)
+
 ## 0.4.0 (2026-02-26)
 
 ### Added

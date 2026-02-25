@@ -4,6 +4,8 @@
 
 Initial release.
 
+### Features
+
 - `generate` command: text-to-image generation
 - `edit` command: image editing with text instructions
 - `providers` command: list available providers
@@ -12,4 +14,8 @@ Initial release.
 - Capability-based provider abstraction (model-independent core + model-dependent providers)
 - JSON output for scripting and tool integration
 - Single-file esbuild bundle
-- Claude Code Skill included (`skills/image-generation/SKILL.md`)
+
+### Distribution
+
+- Claude Code plugin: `somacoffeekyoto/imgx-cli` marketplace with `image-generation` skill
+- npm package name reserved: `imgx-cli` (publish pending)

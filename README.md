@@ -4,6 +4,17 @@ AI image generation and editing from the terminal. Provider-agnostic design with
 
 ## Install
 
+### As a Claude Code plugin
+
+```
+/plugin marketplace add somacoffeekyoto/imgx-cli
+/plugin install imgx-cli@somacoffeekyoto-imgx-cli
+```
+
+After installation, restart Claude Code. The `image-generation` skill becomes available — Claude Code can generate and edit images via natural language instructions.
+
+### As a standalone CLI
+
 ```bash
 npm install -g imgx-cli
 ```
@@ -107,6 +118,49 @@ Each provider declares its supported capabilities. The CLI dynamically enables o
 | Provider | Models | Capabilities |
 |----------|--------|-------------|
 | Gemini | `gemini-3-pro-image-preview`, `gemini-2.5-flash-image` | All 7 capabilities |
+
+## Claude Code plugin structure
+
+imgx-cli doubles as a Claude Code plugin. The repository contains:
+
+```
+.claude-plugin/
+├── plugin.json          # Plugin manifest (name, version, author)
+└── marketplace.json     # Marketplace definition for plugin discovery
+skills/
+└── image-generation/
+    └── SKILL.md         # Skill instructions for Claude Code
+dist/
+└── cli.bundle.js        # Bundled CLI (tracked in git for plugin distribution)
+```
+
+When installed as a plugin, Claude Code clones this repository and registers the skill. The skill instructs Claude Code to execute `dist/cli.bundle.js` via bash when image generation or editing is requested.
+
+### Plugin configuration files
+
+**`.claude-plugin/plugin.json`** — Plugin identity. Fields: `name`, `description`, `version`, `author`. No `category` field (that belongs in `marketplace.json` only).
+
+**`.claude-plugin/marketplace.json`** — Marketplace wrapper. The `source` field must use URL format for self-referencing repositories:
+
+```json
+"source": {
+  "source": "url",
+  "url": "https://github.com/somacoffeekyoto/imgx-cli.git"
+}
+```
+
+**`skills/image-generation/SKILL.md`** — Uses `${CLAUDE_PLUGIN_ROOT}` variable for portable CLI paths. Frontmatter (`name`, `description`) is required for skill registration.
+
+### Version updates
+
+When releasing a new version, update the version string in all three locations:
+
+1. `package.json` — npm package version
+2. `src/cli/index.ts` — CLI `--version` output
+3. `.claude-plugin/plugin.json` — Plugin manifest version
+4. `.claude-plugin/marketplace.json` — Marketplace plugin entry version
+
+Then rebuild (`npm run bundle`) and commit `dist/cli.bundle.js` since plugin distribution relies on the git repository.
 
 ## Development
 

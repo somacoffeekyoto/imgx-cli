@@ -1,4 +1,6 @@
 node_modules/
 build/
-dist/
 *.tsbuildinfo
+imgx-*.png
+imgx-*.jpg
+imgx-*.webp

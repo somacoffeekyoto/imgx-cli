@@ -1,3 +1,8 @@
+---
+name: image-generation
+description: Generates and edits AI images using Google Gemini. Use when images need to be created or modified.
+---
+
 # Image Generation & Editing Skill
 
 Generate and edit AI images using imgx CLI.
@@ -5,7 +10,7 @@ Generate and edit AI images using imgx CLI.
 ## Generate image from text
 
 ```bash
-node "IMGX_CLI_PATH/dist/cli.bundle.js" generate \
+node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" generate \
   --prompt "Your detailed image description" \
   --output "./path/to/output.png" \
   --aspect-ratio "16:9" \
@@ -15,7 +20,7 @@ node "IMGX_CLI_PATH/dist/cli.bundle.js" generate \
 ## Edit existing image
 
 ```bash
-node "IMGX_CLI_PATH/dist/cli.bundle.js" edit \
+node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" edit \
   --input "./path/to/source.png" \
   --prompt "Change the background to cream color" \
   --output "./path/to/edited.png"
@@ -39,8 +44,8 @@ node "IMGX_CLI_PATH/dist/cli.bundle.js" edit \
 
 ```bash
 # List providers and capabilities
-node "IMGX_CLI_PATH/dist/cli.bundle.js" providers
-node "IMGX_CLI_PATH/dist/cli.bundle.js" capabilities
+node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" providers
+node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" capabilities
 ```
 
 ## Output

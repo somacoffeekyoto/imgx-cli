@@ -20,6 +20,20 @@
   ],
   "author": "SOMA COFFEE KYOTO",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/somacoffeekyoto/imgx-cli.git"
+  },
+  "homepage": "https://github.com/somacoffeekyoto/imgx-cli",
+  "bugs": {
+    "url": "https://github.com/somacoffeekyoto/imgx-cli/issues"
+  },
+  "files": [
+    "dist/cli.bundle.js",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "engines": {
     "node": ">=18.0.0"
   },

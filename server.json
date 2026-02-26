@@ -6,12 +6,12 @@
     "url": "https://github.com/somacoffeekyoto/imgx-cli",
     "source": "github"
   },
-  "version": "0.5.2",
+  "version": "0.6.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "imgx-cli",
-      "version": "0.5.2",
+      "version": "0.6.1",
       "transport": {
         "type": "stdio"
       },
@@ -22,6 +22,13 @@
           "format": "string",
           "isSecret": true,
           "name": "GEMINI_API_KEY"
+        },
+        {
+          "description": "OpenAI API key. Optional if configured via 'imgx config set api-key --provider openai'.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "OPENAI_API_KEY"
         }
       ]
     }

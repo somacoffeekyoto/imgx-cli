@@ -50,7 +50,7 @@ Requires Node.js 18+.
 
 ## Setup
 
-Save your API key using the built-in config command:
+Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey) (free tier available), then save it:
 
 ```bash
 imgx config set api-key YOUR_GEMINI_API_KEY
@@ -198,7 +198,7 @@ imgx includes an MCP (Model Context Protocol) server, making it available to any
 
 ### Configuration
 
-Add to your tool's MCP config:
+Add to your tool's MCP config. The `env` section is optional if you have already run `imgx config set api-key`.
 
 **Claude Code** (`.mcp.json` / `claude mcp add`):
 

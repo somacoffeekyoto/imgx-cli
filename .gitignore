@@ -4,3 +4,5 @@ build/
 imgx-*.png
 imgx-*.jpg
 imgx-*.webp
+.env
+.env.*

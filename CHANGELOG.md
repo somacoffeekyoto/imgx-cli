@@ -10,6 +10,7 @@
 
 - README: add Claude Desktop MCP configuration (Windows `cmd /c` + macOS/Linux)
 - README: switch all MCP config examples from local `node` path to `npx`
+- README: replace "Version updates" with full release checklist (version bump → build → publish → verify)
 
 ## 0.5.1 (2026-02-26)
 

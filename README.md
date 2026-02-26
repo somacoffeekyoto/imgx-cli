@@ -349,17 +349,44 @@ When installed as a plugin, the tool clones this repository and registers the sk
 
 **`skills/image-generation/SKILL.md`** — Uses `${CLAUDE_PLUGIN_ROOT}` variable for portable CLI paths. Frontmatter (`name`, `description`) is required for skill registration.
 
-### Version updates
+### Release checklist
 
-When releasing a new version, update the version string in all locations:
+When releasing a new version:
 
-1. `package.json` — npm package version
-2. `src/cli/index.ts` — CLI `--version` output
-3. `.claude-plugin/plugin.json` — Claude Code plugin manifest version
-4. `.claude-plugin/marketplace.json` — Marketplace plugin entry version
-5. `.cursor-plugin/plugin.json` — Cursor plugin manifest version
+**1. Update version strings** in all locations:
 
-Then rebuild (`npm run bundle`) and commit `dist/cli.bundle.js` since plugin distribution relies on the git repository.
+- `package.json`
+- `server.json` (2 places: root `version` + `packages[0].version`)
+- `src/cli/index.ts` — CLI `--version` output
+- `src/mcp/server.ts` — MCP server version
+- `.claude-plugin/plugin.json`
+- `.claude-plugin/marketplace.json`
+- `.cursor-plugin/plugin.json`
+
+**2. Build and commit:**
+
+```bash
+npm run bundle
+# commit dist/cli.bundle.js and dist/mcp.bundle.js (plugin distribution relies on git)
+git push
+```
+
+**3. Publish to registries:**
+
+```bash
+npm publish --access public --otp=YOUR_OTP
+./mcp-publisher publish          # requires: mcp-publisher login github
+```
+
+**4. Verify distribution:**
+
+| Channel | How to verify |
+|---------|--------------|
+| npm | `npm info imgx-cli version` |
+| MCP Registry | `./mcp-publisher publish` succeeds with new version |
+| PulseMCP | Auto-ingested from MCP Registry (daily/weekly) |
+| Claude Code plugin | Users reinstall to get latest git |
+| Claude Desktop | `npx imgx-cli@latest` fetches new version on next launch |
 
 ## Development
 

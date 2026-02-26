@@ -48,16 +48,25 @@ Requires Node.js 18+.
 
 ## Setup
 
-Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey) (free tier available), then save it:
+Set up at least one provider:
+
+**Gemini** — get a key from [Google AI Studio](https://aistudio.google.com/apikey) (free tier available):
 
 ```bash
-imgx config set api-key YOUR_GEMINI_API_KEY
+imgx config set api-key YOUR_GEMINI_API_KEY --provider gemini
 ```
 
-This stores the key in `~/.config/imgx/config.json` (Linux/macOS) or `%APPDATA%\imgx\config.json` (Windows). Alternatively, set an environment variable:
+**OpenAI** — get a key from [OpenAI Platform](https://platform.openai.com/api-keys):
+
+```bash
+imgx config set api-key YOUR_OPENAI_API_KEY --provider openai
+```
+
+Keys are stored in `~/.config/imgx/config.json` (Linux/macOS) or `%APPDATA%\imgx\config.json` (Windows). Alternatively, set environment variables:
 
 ```bash
 export GEMINI_API_KEY="your-api-key"
+export OPENAI_API_KEY="your-api-key"
 ```
 
 Environment variables take precedence over the config file.
@@ -106,7 +115,8 @@ imgx edit --last -p "Crop to 16:9" -o final.png
 ### Configuration
 
 ```bash
-imgx config set api-key <key>     # Save Gemini API key
+imgx config set api-key <key> --provider gemini   # Save Gemini API key
+imgx config set api-key <key> --provider openai   # Save OpenAI API key
 imgx config set model <name>      # Set default model
 imgx config set output-dir <dir>  # Set default output directory
 imgx config set aspect-ratio 16:9 # Set default aspect ratio
@@ -162,7 +172,8 @@ Environment variables override config file settings.
 
 | Variable | Description |
 |----------|-------------|
-| `GEMINI_API_KEY` | Gemini API key (overrides `imgx config set api-key`) |
+| `GEMINI_API_KEY` | Gemini API key |
+| `OPENAI_API_KEY` | OpenAI API key |
 | `IMGX_PROVIDER` | Default provider |
 | `IMGX_MODEL` | Default model |
 | `IMGX_OUTPUT_DIR` | Default output directory |
@@ -206,7 +217,7 @@ Add to your tool's MCP config. The `env` section is optional if you have already
     "imgx": {
       "command": "npx",
       "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
-      "env": { "GEMINI_API_KEY": "your-api-key" }
+      "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
 }
@@ -224,7 +235,7 @@ Or install as a [Claude Code plugin](#install) for automatic MCP registration.
     "imgx": {
       "command": "npx",
       "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
-      "env": { "GEMINI_API_KEY": "your-api-key" }
+      "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
 }
@@ -240,7 +251,7 @@ macOS / Linux:
     "imgx": {
       "command": "npx",
       "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
-      "env": { "GEMINI_API_KEY": "your-api-key" }
+      "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
 }
@@ -254,7 +265,7 @@ Windows:
     "imgx": {
       "command": "cmd",
       "args": ["/c", "npx", "--package=imgx-cli", "-y", "imgx-mcp"],
-      "env": { "GEMINI_API_KEY": "your-api-key" }
+      "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
 }
@@ -270,10 +281,12 @@ Config file location: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or
 [mcp_servers.imgx]
 command = "npx"
 args = ["--package=imgx-cli", "-y", "imgx-mcp"]
-env = { GEMINI_API_KEY = "your-api-key" }
+env = { GEMINI_API_KEY = "your-key", OPENAI_API_KEY = "your-key" }
 ```
 
 The same `npx` pattern works with Cursor, Windsurf, Continue.dev, Cline, Zed, and other MCP-compatible tools. On Windows, use `cmd /c npx` instead of `npx` directly.
+
+Only include the API keys for providers you want to use. At least one is required.
 
 ## Architecture
 
@@ -308,6 +321,7 @@ Each provider declares its supported capabilities. The CLI dynamically enables o
 | Provider | Models | Capabilities |
 |----------|--------|-------------|
 | Gemini | `gemini-3-pro-image-preview`, `gemini-2.5-flash-image` | All 7 capabilities |
+| OpenAI | `gpt-image-1` | Generate, edit, aspect ratio, multi-output |
 
 ## Development
 

@@ -13,6 +13,25 @@ AI image generation and editing from the terminal. Provider-agnostic design with
 
 After installation, restart Claude Code. The `image-generation` skill becomes available — Claude Code can generate and edit images via natural language instructions.
 
+### Update
+
+#### Claude Code plugin
+
+Claude Code's plugin cache does not auto-refresh when a new version is released. To update, uninstall and reinstall:
+
+```
+/plugin uninstall imgx-cli@somacoffeekyoto-imgx-cli
+/plugin install imgx-cli@somacoffeekyoto-imgx-cli
+```
+
+Then restart Claude Code.
+
+#### Standalone CLI
+
+```bash
+npm update -g imgx-cli
+```
+
 ### As a standalone CLI
 
 ```bash

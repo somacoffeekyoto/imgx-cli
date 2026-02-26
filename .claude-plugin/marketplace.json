@@ -18,7 +18,10 @@
         "url": "https://github.com/somacoffeekyoto/imgx-cli.git"
       },
       "category": "design",
-      "homepage": "https://github.com/somacoffeekyoto/imgx-cli"
+      "homepage": "https://github.com/somacoffeekyoto/imgx-cli",
+      "repository": "https://github.com/somacoffeekyoto/imgx-cli",
+      "license": "MIT",
+      "keywords": ["image-generation", "image-editing", "gemini", "ai", "cli", "mcp"]
     }
   ]
 }

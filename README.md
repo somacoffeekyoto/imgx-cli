@@ -2,6 +2,8 @@
 
 AI image generation and editing from the terminal. Provider-agnostic design with capability-based abstraction.
 
+<!-- TODO: Add demo GIF showing generate → edit → edit --last workflow -->
+
 ## Install
 
 ### As a Claude Code plugin
@@ -17,7 +19,13 @@ After installation, restart Claude Code. The `image-generation` skill becomes av
 
 #### Claude Code plugin
 
-Claude Code's plugin cache does not auto-refresh when a new version is released. To update, uninstall and reinstall:
+You can try updating via the plugin manager:
+
+```
+/plugin update → select "installed" → imgx-cli → update
+```
+
+If the update shows no changes or the plugin doesn't reflect the latest version, uninstall and reinstall:
 
 ```
 /plugin uninstall imgx-cli@somacoffeekyoto-imgx-cli
@@ -356,3 +364,9 @@ Remove-Item -Recurse -Force "$env:APPDATA\imgx"
 ## License
 
 MIT — [SOMA COFFEE KYOTO](https://github.com/somacoffeekyoto)
+
+## Links
+
+- [GitHub](https://github.com/somacoffeekyoto/imgx-cli)
+- [SOMA COFFEE KYOTO](https://somacoffee.net)
+- [X (@somacoffeekyoto)](https://x.com/somacoffeekyoto)

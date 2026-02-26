@@ -206,13 +206,17 @@ Add to your tool's MCP config. The `env` section is optional if you have already
 {
   "mcpServers": {
     "imgx": {
-      "command": "node",
-      "args": ["/path/to/imgx-cli/dist/mcp.bundle.js"],
+      "command": "npx",
+      "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
       "env": { "GEMINI_API_KEY": "your-api-key" }
     }
   }
 }
 ```
+
+On Windows, replace `"command": "npx"` with `"command": "cmd"` and prepend `"/c"` to the args array.
+
+Or install as a [Claude Code plugin](#install) for automatic MCP registration.
 
 **Gemini CLI** (`~/.gemini/settings.json`):
 
@@ -220,24 +224,58 @@ Add to your tool's MCP config. The `env` section is optional if you have already
 {
   "mcpServers": {
     "imgx": {
-      "command": "node",
-      "args": ["/path/to/imgx-cli/dist/mcp.bundle.js"],
+      "command": "npx",
+      "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
       "env": { "GEMINI_API_KEY": "your-api-key" }
     }
   }
 }
 ```
 
+**Claude Desktop** (`claude_desktop_config.json`):
+
+macOS / Linux:
+
+```json
+{
+  "mcpServers": {
+    "imgx": {
+      "command": "npx",
+      "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
+      "env": { "GEMINI_API_KEY": "your-api-key" }
+    }
+  }
+}
+```
+
+Windows:
+
+```json
+{
+  "mcpServers": {
+    "imgx": {
+      "command": "cmd",
+      "args": ["/c", "npx", "--package=imgx-cli", "-y", "imgx-mcp"],
+      "env": { "GEMINI_API_KEY": "your-api-key" }
+    }
+  }
+}
+```
+
+Config file location: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS). After editing, restart Claude Desktop.
+
+> **Note:** Claude Desktop runs the MCP server from its own app directory. Images will be saved there by default. To control the output location, add `"IMGX_OUTPUT_DIR": "C:\\Users\\you\\Pictures"` to the `env` section, or run `imgx config set output-dir <path>` beforehand.
+
 **Codex CLI** (`.codex/config.toml`):
 
 ```toml
 [mcp_servers.imgx]
-command = "node"
-args = ["/path/to/imgx-cli/dist/mcp.bundle.js"]
+command = "npx"
+args = ["--package=imgx-cli", "-y", "imgx-mcp"]
 env = { GEMINI_API_KEY = "your-api-key" }
 ```
 
-The same configuration pattern works with Cursor, Windsurf, Continue.dev, Cline, Zed, and other MCP-compatible tools.
+The same `npx` pattern works with Cursor, Windsurf, Continue.dev, Cline, Zed, and other MCP-compatible tools. On Windows, use `cmd /c npx` instead of `npx` directly.
 
 ## Architecture
 

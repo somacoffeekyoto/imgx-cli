@@ -10,6 +10,7 @@
 
 ### Changed
 
+- README: added Claude Desktop MCP configuration section with output directory note
 - README: added Google AI Studio link for API key setup, MCP env section note
 
 ## 0.5.0 (2026-02-26)

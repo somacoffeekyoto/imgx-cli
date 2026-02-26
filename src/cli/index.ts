@@ -1,5 +1,6 @@
 import { parseArgs } from "node:util";
 import { initGemini } from "../providers/gemini/index.js";
+import { initOpenAI } from "../providers/openai/index.js";
 import { getProvider, listProviders } from "../core/registry.js";
 import { resolveDefault, loadLastOutput } from "../core/config.js";
 import { runInit } from "./commands/init.js";
@@ -9,7 +10,7 @@ import { runEdit } from "./commands/edit.js";
 import { runConfig } from "./commands/config.js";
 import * as out from "./output.js";
 
-const VERSION = "0.5.2";
+const VERSION = "0.6.0";
 
 const HELP = `imgx v${VERSION} — AI image generation and editing CLI
 
@@ -24,7 +25,7 @@ Commands:
 Usage:
   imgx generate -p "prompt" -o "./output.png"
   imgx edit -i "./input.png" -p "change background" -o "./output.png"
-  imgx config set api-key <your-gemini-api-key>
+  imgx config set api-key <your-api-key> --provider gemini
   imgx config list
 
 Options:
@@ -36,7 +37,7 @@ Options:
   -n, --count <number>       Number of images to generate
   -r, --resolution <size>    Resolution: 1K, 2K, 4K
   -m, --model <model>        Model name
-  --provider <name>          Provider (default: gemini)
+  --provider <name>          Provider: gemini, openai (default: gemini)
   -d, --output-dir <dir>     Output directory
   -h, --help                 Show help
   -v, --version              Show version
@@ -53,6 +54,7 @@ Configuration:
 
 Environment variables (override config file):
   GEMINI_API_KEY             Gemini API key
+  OPENAI_API_KEY             OpenAI API key
   IMGX_PROVIDER              Default provider
   IMGX_MODEL                 Default model
   IMGX_OUTPUT_DIR            Default output directory
@@ -61,6 +63,7 @@ Environment variables (override config file):
 function main(): void {
   // プロバイダ初期化
   initGemini();
+  initOpenAI();
 
   const args = process.argv.slice(2);
   const command = args[0];
@@ -88,7 +91,7 @@ function main(): void {
   if (command === "providers") {
     const all = listProviders();
     if (all.length === 0) {
-      out.fail("No providers configured. Set GEMINI_API_KEY to enable Gemini.");
+      out.fail("No providers configured. Set GEMINI_API_KEY or OPENAI_API_KEY to enable a provider.");
     }
     const data = all.map((p) => ({
       name: p.info.name,

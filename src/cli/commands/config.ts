@@ -1,6 +1,21 @@
 import { loadConfig, saveConfig, getConfigPath } from "../../core/config.js";
 import * as out from "../output.js";
 
+/** Extract --provider <name> from args, returning the provider name and remaining args */
+function extractProvider(args: string[]): { provider: string; rest: string[] } {
+  const rest: string[] = [];
+  let provider = "gemini";
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--provider" && i + 1 < args.length) {
+      provider = args[i + 1];
+      i++; // skip value
+    } else {
+      rest.push(args[i]);
+    }
+  }
+  return { provider, rest };
+}
+
 export function runConfig(args: string[]): void {
   const sub = args[0];
 
@@ -10,21 +25,23 @@ export function runConfig(args: string[]): void {
   }
 
   if (sub === "set") {
-    const key = args[1];
-    const value = args[2];
+    const { provider, rest } = extractProvider(args.slice(1));
+    const key = rest[0];
+    const value = rest[1];
     if (!key || !value) {
-      out.fail('Usage: imgx config set <key> <value>\n  Keys: api-key, provider, model, output-dir, aspect-ratio, resolution');
+      out.fail('Usage: imgx config set <key> <value> [--provider <name>]\n  Keys: api-key, provider, model, output-dir, aspect-ratio, resolution');
     }
-    setKey(key, value);
+    setKey(key, value, provider);
     return;
   }
 
   if (sub === "get") {
-    const key = args[1];
+    const { provider, rest } = extractProvider(args.slice(1));
+    const key = rest[0];
     if (!key) {
-      out.fail("Usage: imgx config get <key>");
+      out.fail("Usage: imgx config get <key> [--provider <name>]");
     }
-    getKey(key);
+    getKey(key, provider);
     return;
   }
 
@@ -36,14 +53,14 @@ export function runConfig(args: string[]): void {
   out.fail(`Unknown config subcommand: ${sub}. Use: list, set, get, path`);
 }
 
-function setKey(key: string, value: string): void {
+function setKey(key: string, value: string, provider: string): void {
   const config = loadConfig();
 
   switch (key) {
     case "api-key": {
       if (!config.providers) config.providers = {};
-      if (!config.providers.gemini) config.providers.gemini = {};
-      config.providers.gemini.apiKey = value;
+      if (!config.providers[provider]) config.providers[provider] = {};
+      config.providers[provider]!.apiKey = value;
       break;
     }
     case "provider": {
@@ -79,15 +96,15 @@ function setKey(key: string, value: string): void {
   out.success({ key, status: "saved" });
 }
 
-function getKey(key: string): void {
+function getKey(key: string, provider: string): void {
   const config = loadConfig();
 
   switch (key) {
     case "api-key": {
-      const val = config.providers?.gemini?.apiKey;
+      const val = config.providers?.[provider]?.apiKey;
       // Mask the API key for safety
       const masked = val ? val.slice(0, 6) + "..." + val.slice(-4) : undefined;
-      out.success({ key, value: masked ?? null });
+      out.success({ key, provider, value: masked ?? null });
       return;
     }
     case "provider":
@@ -112,10 +129,15 @@ function getKey(key: string): void {
 
 function showAll(): void {
   const config = loadConfig();
-  const hasApiKey = !!config.providers?.gemini?.apiKey;
+  const providerKeys: Record<string, string> = {};
+  if (config.providers) {
+    for (const [name, prov] of Object.entries(config.providers)) {
+      if (prov?.apiKey) providerKeys[name] = "(set)";
+    }
+  }
   out.success({
     configPath: getConfigPath(),
-    apiKey: hasApiKey ? "(set)" : "(not set)",
+    apiKeys: Object.keys(providerKeys).length > 0 ? providerKeys : "(none set)",
     defaults: config.defaults ?? {},
   });
 }

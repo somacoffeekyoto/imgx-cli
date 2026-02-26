@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { initGemini } from "../providers/gemini/index.js";
+import { initOpenAI } from "../providers/openai/index.js";
 import { getProvider, listProviders } from "../core/registry.js";
 import { saveImage } from "../core/storage.js";
 import { saveLastOutput, loadLastOutput } from "../core/config.js";
@@ -9,11 +10,12 @@ import type { GenerateInput, EditInput } from "../core/types.js";
 
 const server = new McpServer({
   name: "imgx",
-  version: "0.5.2",
+  version: "0.6.0",
 });
 
 // プロバイダ初期化
 initGemini();
+initOpenAI();
 
 function resolveProvider(providerName?: string) {
   const name = providerName || process.env.IMGX_PROVIDER || "gemini";
@@ -22,7 +24,7 @@ function resolveProvider(providerName?: string) {
     const available = listProviders().map((p) => p.info.name).join(", ");
     throw new Error(
       `Provider "${name}" not available.` +
-        (available ? ` Available: ${available}` : " Set GEMINI_API_KEY to enable Gemini.")
+        (available ? ` Available: ${available}` : " Set GEMINI_API_KEY or OPENAI_API_KEY to enable a provider.")
     );
   }
   return provider;

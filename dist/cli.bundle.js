@@ -303,7 +303,7 @@ var require_p_retry = __commonJS({
       return error;
     };
     var isNetworkError = (errorMessage) => networkErrorMsgs.includes(errorMessage);
-    var pRetry2 = (input, options) => new Promise((resolve4, reject) => {
+    var pRetry2 = (input, options) => new Promise((resolve5, reject) => {
       options = {
         onFailedAttempt: () => {
         },
@@ -313,7 +313,7 @@ var require_p_retry = __commonJS({
       const operation = retry.operation(options);
       operation.attempt(async (attemptNumber) => {
         try {
-          resolve4(await input(attemptNumber));
+          resolve5(await input(attemptNumber));
         } catch (error) {
           if (!(error instanceof Error)) {
             reject(new TypeError(`Non-error was thrown: "${error}". You should only throw errors.`));
@@ -850,8 +850,8 @@ var require_retry3 = __commonJS({
       }
       const delay = getNextRetryDelay(config);
       err.config.retryConfig.currentRetryAttempt += 1;
-      const backoff = config.retryBackoff ? config.retryBackoff(err, delay) : new Promise((resolve4) => {
-        setTimeout(resolve4, delay);
+      const backoff = config.retryBackoff ? config.retryBackoff(err, delay) : new Promise((resolve5) => {
+        setTimeout(resolve5, delay);
       });
       if (config.onRetryAttempt) {
         await config.onRetryAttempt(err);
@@ -1627,8 +1627,8 @@ var require_helpers = __commonJS({
     function req(url, opts = {}) {
       const href = typeof url === "string" ? url : url.href;
       const req2 = (href.startsWith("https:") ? https2 : http3).request(url, opts);
-      const promise = new Promise((resolve4, reject) => {
-        req2.once("response", resolve4).once("error", reject).end();
+      const promise = new Promise((resolve5, reject) => {
+        req2.once("response", resolve5).once("error", reject).end();
       });
       req2.then = promise.then.bind(promise);
       return req2;
@@ -1805,7 +1805,7 @@ var require_parse_proxy_response = __commonJS({
     var debug_1 = __importDefault(require_src());
     var debug = (0, debug_1.default)("https-proxy-agent:parse-proxy-response");
     function parseProxyResponse(socket) {
-      return new Promise((resolve4, reject) => {
+      return new Promise((resolve5, reject) => {
         let buffersLength = 0;
         const buffers = [];
         function read() {
@@ -1871,7 +1871,7 @@ var require_parse_proxy_response = __commonJS({
           }
           debug("got proxy server response: %o %o", firstLine, headers);
           cleanup();
-          resolve4({
+          resolve5({
             connect: {
               statusCode,
               statusText,
@@ -2113,7 +2113,7 @@ var require_ponyfill_es2018 = __commonJS({
         return new originalPromise(executor);
       }
       function promiseResolvedWith(value) {
-        return newPromise((resolve4) => resolve4(value));
+        return newPromise((resolve5) => resolve5(value));
       }
       function promiseRejectedWith(reason) {
         return originalPromiseReject(reason);
@@ -2283,8 +2283,8 @@ var require_ponyfill_es2018 = __commonJS({
         return new TypeError("Cannot " + name + " a stream using a released reader");
       }
       function defaultReaderClosedPromiseInitialize(reader) {
-        reader._closedPromise = newPromise((resolve4, reject) => {
-          reader._closedPromise_resolve = resolve4;
+        reader._closedPromise = newPromise((resolve5, reject) => {
+          reader._closedPromise_resolve = resolve5;
           reader._closedPromise_reject = reject;
         });
       }
@@ -2458,8 +2458,8 @@ var require_ponyfill_es2018 = __commonJS({
           }
           let resolvePromise;
           let rejectPromise;
-          const promise = newPromise((resolve4, reject) => {
-            resolvePromise = resolve4;
+          const promise = newPromise((resolve5, reject) => {
+            resolvePromise = resolve5;
             rejectPromise = reject;
           });
           const readRequest = {
@@ -2564,8 +2564,8 @@ var require_ponyfill_es2018 = __commonJS({
           const reader = this._reader;
           let resolvePromise;
           let rejectPromise;
-          const promise = newPromise((resolve4, reject) => {
-            resolvePromise = resolve4;
+          const promise = newPromise((resolve5, reject) => {
+            resolvePromise = resolve5;
             rejectPromise = reject;
           });
           const readRequest = {
@@ -3584,8 +3584,8 @@ var require_ponyfill_es2018 = __commonJS({
           }
           let resolvePromise;
           let rejectPromise;
-          const promise = newPromise((resolve4, reject) => {
-            resolvePromise = resolve4;
+          const promise = newPromise((resolve5, reject) => {
+            resolvePromise = resolve5;
             rejectPromise = reject;
           });
           const readIntoRequest = {
@@ -3897,10 +3897,10 @@ var require_ponyfill_es2018 = __commonJS({
           wasAlreadyErroring = true;
           reason = void 0;
         }
-        const promise = newPromise((resolve4, reject) => {
+        const promise = newPromise((resolve5, reject) => {
           stream._pendingAbortRequest = {
             _promise: void 0,
-            _resolve: resolve4,
+            _resolve: resolve5,
             _reject: reject,
             _reason: reason,
             _wasAlreadyErroring: wasAlreadyErroring
@@ -3917,9 +3917,9 @@ var require_ponyfill_es2018 = __commonJS({
         if (state === "closed" || state === "errored") {
           return promiseRejectedWith(new TypeError(`The stream (in ${state} state) is not in the writable state and cannot be closed`));
         }
-        const promise = newPromise((resolve4, reject) => {
+        const promise = newPromise((resolve5, reject) => {
           const closeRequest = {
-            _resolve: resolve4,
+            _resolve: resolve5,
             _reject: reject
           };
           stream._closeRequest = closeRequest;
@@ -3932,9 +3932,9 @@ var require_ponyfill_es2018 = __commonJS({
         return promise;
       }
       function WritableStreamAddWriteRequest(stream) {
-        const promise = newPromise((resolve4, reject) => {
+        const promise = newPromise((resolve5, reject) => {
           const writeRequest = {
-            _resolve: resolve4,
+            _resolve: resolve5,
             _reject: reject
           };
           stream._writeRequests.push(writeRequest);
@@ -4550,8 +4550,8 @@ var require_ponyfill_es2018 = __commonJS({
         return new TypeError("Cannot " + name + " a stream using a released writer");
       }
       function defaultWriterClosedPromiseInitialize(writer) {
-        writer._closedPromise = newPromise((resolve4, reject) => {
-          writer._closedPromise_resolve = resolve4;
+        writer._closedPromise = newPromise((resolve5, reject) => {
+          writer._closedPromise_resolve = resolve5;
           writer._closedPromise_reject = reject;
           writer._closedPromiseState = "pending";
         });
@@ -4587,8 +4587,8 @@ var require_ponyfill_es2018 = __commonJS({
         writer._closedPromiseState = "resolved";
       }
       function defaultWriterReadyPromiseInitialize(writer) {
-        writer._readyPromise = newPromise((resolve4, reject) => {
-          writer._readyPromise_resolve = resolve4;
+        writer._readyPromise = newPromise((resolve5, reject) => {
+          writer._readyPromise_resolve = resolve5;
           writer._readyPromise_reject = reject;
         });
         writer._readyPromiseState = "pending";
@@ -4675,7 +4675,7 @@ var require_ponyfill_es2018 = __commonJS({
         source._disturbed = true;
         let shuttingDown = false;
         let currentWrite = promiseResolvedWith(void 0);
-        return newPromise((resolve4, reject) => {
+        return newPromise((resolve5, reject) => {
           let abortAlgorithm;
           if (signal !== void 0) {
             abortAlgorithm = () => {
@@ -4820,7 +4820,7 @@ var require_ponyfill_es2018 = __commonJS({
             if (isError) {
               reject(error);
             } else {
-              resolve4(void 0);
+              resolve5(void 0);
             }
             return null;
           }
@@ -5101,8 +5101,8 @@ var require_ponyfill_es2018 = __commonJS({
         let branch1;
         let branch2;
         let resolveCancelPromise;
-        const cancelPromise = newPromise((resolve4) => {
-          resolveCancelPromise = resolve4;
+        const cancelPromise = newPromise((resolve5) => {
+          resolveCancelPromise = resolve5;
         });
         function pullAlgorithm() {
           if (reading) {
@@ -5193,8 +5193,8 @@ var require_ponyfill_es2018 = __commonJS({
         let branch1;
         let branch2;
         let resolveCancelPromise;
-        const cancelPromise = newPromise((resolve4) => {
-          resolveCancelPromise = resolve4;
+        const cancelPromise = newPromise((resolve5) => {
+          resolveCancelPromise = resolve5;
         });
         function forwardReaderError(thisReader) {
           uponRejection(thisReader._closedPromise, (r2) => {
@@ -5974,8 +5974,8 @@ var require_ponyfill_es2018 = __commonJS({
           const writableHighWaterMark = ExtractHighWaterMark(writableStrategy, 1);
           const writableSizeAlgorithm = ExtractSizeAlgorithm(writableStrategy);
           let startPromise_resolve;
-          const startPromise = newPromise((resolve4) => {
-            startPromise_resolve = resolve4;
+          const startPromise = newPromise((resolve5) => {
+            startPromise_resolve = resolve5;
           });
           InitializeTransformStream(this, startPromise, writableHighWaterMark, writableSizeAlgorithm, readableHighWaterMark, readableSizeAlgorithm);
           SetUpTransformStreamDefaultControllerFromTransformer(this, transformer);
@@ -6068,8 +6068,8 @@ var require_ponyfill_es2018 = __commonJS({
         if (stream._backpressureChangePromise !== void 0) {
           stream._backpressureChangePromise_resolve();
         }
-        stream._backpressureChangePromise = newPromise((resolve4) => {
-          stream._backpressureChangePromise_resolve = resolve4;
+        stream._backpressureChangePromise = newPromise((resolve5) => {
+          stream._backpressureChangePromise_resolve = resolve5;
         });
         stream._backpressure = backpressure;
       }
@@ -6237,8 +6237,8 @@ var require_ponyfill_es2018 = __commonJS({
           return controller._finishPromise;
         }
         const readable = stream._readable;
-        controller._finishPromise = newPromise((resolve4, reject) => {
-          controller._finishPromise_resolve = resolve4;
+        controller._finishPromise = newPromise((resolve5, reject) => {
+          controller._finishPromise_resolve = resolve5;
           controller._finishPromise_reject = reject;
         });
         const cancelPromise = controller._cancelAlgorithm(reason);
@@ -6264,8 +6264,8 @@ var require_ponyfill_es2018 = __commonJS({
           return controller._finishPromise;
         }
         const readable = stream._readable;
-        controller._finishPromise = newPromise((resolve4, reject) => {
-          controller._finishPromise_resolve = resolve4;
+        controller._finishPromise = newPromise((resolve5, reject) => {
+          controller._finishPromise_resolve = resolve5;
           controller._finishPromise_reject = reject;
         });
         const flushPromise = controller._flushAlgorithm();
@@ -6295,8 +6295,8 @@ var require_ponyfill_es2018 = __commonJS({
           return controller._finishPromise;
         }
         const writable = stream._writable;
-        controller._finishPromise = newPromise((resolve4, reject) => {
-          controller._finishPromise_resolve = resolve4;
+        controller._finishPromise = newPromise((resolve5, reject) => {
+          controller._finishPromise_resolve = resolve5;
           controller._finishPromise_reject = reject;
         });
         const cancelPromise = controller._cancelAlgorithm(reason);
@@ -8247,7 +8247,7 @@ import zlib from "node:zlib";
 import Stream2, { PassThrough as PassThrough2, pipeline as pump } from "node:stream";
 import { Buffer as Buffer3 } from "node:buffer";
 async function fetch2(url, options_) {
-  return new Promise((resolve4, reject) => {
+  return new Promise((resolve5, reject) => {
     const request = new Request(url, options_);
     const { parsedURL, options } = getNodeRequestOptions(request);
     if (!supportedSchemas.has(parsedURL.protocol)) {
@@ -8256,7 +8256,7 @@ async function fetch2(url, options_) {
     if (parsedURL.protocol === "data:") {
       const data = dist_default(request.url);
       const response2 = new Response2(data, { headers: { "Content-Type": data.typeFull } });
-      resolve4(response2);
+      resolve5(response2);
       return;
     }
     const send = (parsedURL.protocol === "https:" ? https : http2).request;
@@ -8378,7 +8378,7 @@ async function fetch2(url, options_) {
             if (responseReferrerPolicy) {
               requestOptions.referrerPolicy = responseReferrerPolicy;
             }
-            resolve4(fetch2(new Request(locationURL, requestOptions)));
+            resolve5(fetch2(new Request(locationURL, requestOptions)));
             finalize();
             return;
           }
@@ -8411,7 +8411,7 @@ async function fetch2(url, options_) {
       const codings = headers.get("Content-Encoding");
       if (!request.compress || request.method === "HEAD" || codings === null || response_.statusCode === 204 || response_.statusCode === 304) {
         response = new Response2(body, responseOptions);
-        resolve4(response);
+        resolve5(response);
         return;
       }
       const zlibOptions = {
@@ -8425,7 +8425,7 @@ async function fetch2(url, options_) {
           }
         });
         response = new Response2(body, responseOptions);
-        resolve4(response);
+        resolve5(response);
         return;
       }
       if (codings === "deflate" || codings === "x-deflate") {
@@ -8449,12 +8449,12 @@ async function fetch2(url, options_) {
             });
           }
           response = new Response2(body, responseOptions);
-          resolve4(response);
+          resolve5(response);
         });
         raw.once("end", () => {
           if (!response) {
             response = new Response2(body, responseOptions);
-            resolve4(response);
+            resolve5(response);
           }
         });
         return;
@@ -8466,11 +8466,11 @@ async function fetch2(url, options_) {
           }
         });
         response = new Response2(body, responseOptions);
-        resolve4(response);
+        resolve5(response);
         return;
       }
       response = new Response2(body, responseOptions);
-      resolve4(response);
+      resolve5(response);
     });
     writeToStream(request_, request).catch(reject);
   });
@@ -14540,7 +14540,7 @@ var require_jwtaccess = __commonJS({
         }
       }
       fromStreamAsync(inputStream) {
-        return new Promise((resolve4, reject) => {
+        return new Promise((resolve5, reject) => {
           if (!inputStream) {
             reject(new Error("Must pass in a stream containing the service account auth settings."));
           }
@@ -14549,7 +14549,7 @@ var require_jwtaccess = __commonJS({
             try {
               const data = JSON.parse(s2);
               this.fromJSON(data);
-              resolve4();
+              resolve5();
             } catch (err) {
               reject(err);
             }
@@ -14788,7 +14788,7 @@ var require_jwtclient = __commonJS({
         }
       }
       fromStreamAsync(inputStream) {
-        return new Promise((resolve4, reject) => {
+        return new Promise((resolve5, reject) => {
           if (!inputStream) {
             throw new Error("Must pass in a stream containing the service account auth settings.");
           }
@@ -14797,7 +14797,7 @@ var require_jwtclient = __commonJS({
             try {
               const data = JSON.parse(s2);
               this.fromJSON(data);
-              resolve4();
+              resolve5();
             } catch (e2) {
               reject(e2);
             }
@@ -14930,7 +14930,7 @@ var require_refreshclient = __commonJS({
         }
       }
       async fromStreamAsync(inputStream) {
-        return new Promise((resolve4, reject) => {
+        return new Promise((resolve5, reject) => {
           if (!inputStream) {
             return reject(new Error("Must pass in a stream containing the user refresh token."));
           }
@@ -14939,7 +14939,7 @@ var require_refreshclient = __commonJS({
             try {
               const data = JSON.parse(s2);
               this.fromJSON(data);
-              return resolve4();
+              return resolve5();
             } catch (err) {
               return reject(err);
             }
@@ -16772,7 +16772,7 @@ var require_pluggable_auth_handler = __commonJS({
        * @return A promise that resolves with the executable response.
        */
       retrieveResponseFromExecutable(envMap) {
-        return new Promise((resolve4, reject) => {
+        return new Promise((resolve5, reject) => {
           const child = childProcess.spawn(this.commandComponents[0], this.commandComponents.slice(1), {
             env: { ...process.env, ...Object.fromEntries(envMap) }
           });
@@ -16794,7 +16794,7 @@ var require_pluggable_auth_handler = __commonJS({
               try {
                 const responseJson = JSON.parse(output);
                 const response = new executable_response_1.ExecutableResponse(responseJson);
-                return resolve4(response);
+                return resolve5(response);
               } catch (error) {
                 if (error instanceof executable_response_1.ExecutableResponseError) {
                   return reject(error);
@@ -17697,7 +17697,7 @@ var require_googleauth = __commonJS({
         }
       }
       fromStreamAsync(inputStream, options) {
-        return new Promise((resolve4, reject) => {
+        return new Promise((resolve5, reject) => {
           if (!inputStream) {
             throw new Error("Must pass in a stream containing the Google auth settings.");
           }
@@ -17707,7 +17707,7 @@ var require_googleauth = __commonJS({
               try {
                 const data = JSON.parse(chunks.join(""));
                 const r2 = this._cacheClientFromJSON(data, options);
-                return resolve4(r2);
+                return resolve5(r2);
               } catch (err) {
                 if (!this.keyFilename)
                   throw err;
@@ -17717,7 +17717,7 @@ var require_googleauth = __commonJS({
                 });
                 this.cachedCredential = client;
                 this.setGapicJWTValues(client);
-                return resolve4(client);
+                return resolve5(client);
               }
             } catch (err) {
               return reject(err);
@@ -17753,17 +17753,17 @@ var require_googleauth = __commonJS({
        * Run the Google Cloud SDK command that prints the default project ID
        */
       async getDefaultServiceProjectId() {
-        return new Promise((resolve4) => {
+        return new Promise((resolve5) => {
           (0, child_process_1.exec)("gcloud config config-helper --format json", (err, stdout) => {
             if (!err && stdout) {
               try {
                 const projectId = JSON.parse(stdout).configuration.properties.core.project;
-                resolve4(projectId);
+                resolve5(projectId);
                 return;
               } catch (e2) {
               }
             }
-            resolve4(null);
+            resolve5(null);
           });
         });
       }
@@ -22081,9 +22081,12 @@ function saveConfig(config) {
   }
 }
 function resolveApiKey(providerName) {
-  if (providerName === "gemini" && process.env.GEMINI_API_KEY) {
-    return process.env.GEMINI_API_KEY;
-  }
+  const envMap = {
+    gemini: process.env.GEMINI_API_KEY,
+    openai: process.env.OPENAI_API_KEY
+  };
+  if (envMap[providerName])
+    return envMap[providerName];
   const config = loadConfig();
   return config.providers?.[providerName]?.apiKey;
 }
@@ -26893,14 +26896,14 @@ function __asyncValues(o) {
   }, i2);
   function verb(n) {
     i2[n] = o[n] && function(v) {
-      return new Promise(function(resolve4, reject) {
-        v = o[n](v), settle(resolve4, reject, v.done, v.value);
+      return new Promise(function(resolve5, reject) {
+        v = o[n](v), settle(resolve5, reject, v.done, v.value);
       });
     };
   }
-  function settle(resolve4, reject, d, v) {
+  function settle(resolve5, reject, d, v) {
     Promise.resolve(v).then(function(v2) {
-      resolve4({ value: v2, done: d });
+      resolve5({ value: v2, done: d });
     }, reject);
   }
 }
@@ -32871,8 +32874,8 @@ var LiveMusic = class {
     const url = `${websocketBaseUrl}/ws/google.ai.generativelanguage.${apiVersion}.GenerativeService.BidiGenerateMusic?key=${apiKey}`;
     let onopenResolve = () => {
     };
-    const onopenPromise = new Promise((resolve4) => {
-      onopenResolve = resolve4;
+    const onopenPromise = new Promise((resolve5) => {
+      onopenResolve = resolve5;
     });
     const callbacks = params.callbacks;
     const onopenAwaitedCallback = function() {
@@ -33112,8 +33115,8 @@ var Live = class {
     }
     let onopenResolve = () => {
     };
-    const onopenPromise = new Promise((resolve4) => {
-      onopenResolve = resolve4;
+    const onopenPromise = new Promise((resolve5) => {
+      onopenResolve = resolve5;
     });
     const callbacks = params.callbacks;
     const onopenAwaitedCallback = function() {
@@ -36055,7 +36058,7 @@ var safeJSON = (text) => {
     return void 0;
   }
 };
-var sleep$1 = (ms) => new Promise((resolve4) => setTimeout(resolve4, ms));
+var sleep$1 = (ms) => new Promise((resolve5) => setTimeout(resolve5, ms));
 var VERSION = "0.0.1";
 function getDetectedPlatform() {
   if (typeof Deno !== "undefined" && Deno.build != null) {
@@ -36975,8 +36978,8 @@ async function defaultParseResponse(client, props) {
 }
 var APIPromise = class _APIPromise extends Promise {
   constructor(client, responsePromise, parseResponse = defaultParseResponse) {
-    super((resolve4) => {
-      resolve4(null);
+    super((resolve5) => {
+      resolve5(null);
     });
     this.responsePromise = responsePromise;
     this.parseResponse = parseResponse;
@@ -39359,9 +39362,191 @@ function initGemini() {
   registerProvider(new GeminiProvider(apiKey));
 }
 
+// build/providers/openai/client.js
+import { readFileSync as readFileSync3 } from "node:fs";
+import { resolve as resolve3 } from "node:path";
+
+// build/providers/openai/capabilities.js
+var OPENAI_PROVIDER_INFO = {
+  name: "openai",
+  models: ["gpt-image-1"],
+  defaultModel: "gpt-image-1",
+  capabilities: /* @__PURE__ */ new Set([
+    Capability.TEXT_TO_IMAGE,
+    Capability.ASPECT_RATIO,
+    Capability.IMAGE_EDITING,
+    Capability.MULTIPLE_OUTPUTS
+  ]),
+  aspectRatios: ["1:1", "3:2", "2:3", "16:9", "9:16", "4:3", "3:4"],
+  resolutions: ["1K", "2K", "4K"]
+};
+
+// build/providers/openai/client.js
+var API_BASE = "https://api.openai.com/v1";
+function mapSize(aspectRatio) {
+  switch (aspectRatio) {
+    case "1:1":
+      return "1024x1024";
+    case "3:2":
+    case "16:9":
+    case "4:3":
+      return "1536x1024";
+    case "2:3":
+    case "9:16":
+    case "3:4":
+      return "1024x1536";
+    default:
+      return "auto";
+  }
+}
+function mapQuality(resolution) {
+  switch (resolution) {
+    case "1K":
+      return "low";
+    case "4K":
+      return "high";
+    default:
+      return "auto";
+  }
+}
+function buildMultipart(fields, files) {
+  const boundary = `----imgx${Date.now()}${Math.random().toString(36).slice(2)}`;
+  const parts = [];
+  for (const [key, value] of Object.entries(fields)) {
+    parts.push(Buffer.from(`--${boundary}\r
+Content-Disposition: form-data; name="${key}"\r
+\r
+${value}\r
+`));
+  }
+  for (const file of files) {
+    parts.push(Buffer.from(`--${boundary}\r
+Content-Disposition: form-data; name="${file.name}"; filename="${file.filename}"\r
+Content-Type: ${file.contentType}\r
+\r
+`));
+    parts.push(file.data);
+    parts.push(Buffer.from("\r\n"));
+  }
+  parts.push(Buffer.from(`--${boundary}--\r
+`));
+  const concatenated = Buffer.concat(parts);
+  return {
+    body: new Uint8Array(concatenated.buffer, concatenated.byteOffset, concatenated.byteLength),
+    contentType: `multipart/form-data; boundary=${boundary}`
+  };
+}
+var OpenAIProvider = class {
+  info = OPENAI_PROVIDER_INFO;
+  apiKey;
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+  }
+  async generate(input, model) {
+    const modelName = model || this.info.defaultModel;
+    try {
+      const response = await fetch(`${API_BASE}/images/generations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`
+        },
+        body: JSON.stringify({
+          model: modelName,
+          prompt: input.prompt,
+          n: input.count || 1,
+          size: mapSize(input.aspectRatio),
+          quality: mapQuality(input.resolution)
+        })
+      });
+      const json = await response.json();
+      if (!response.ok || json.error) {
+        return {
+          success: false,
+          images: [],
+          error: json.error?.message || `HTTP ${response.status}`
+        };
+      }
+      return this.parseResponse(json);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { success: false, images: [], error: msg };
+    }
+  }
+  async edit(input, model) {
+    const modelName = model || this.info.defaultModel;
+    const absPath = resolve3(input.inputImage);
+    const imageBuffer = readFileSync3(absPath);
+    const ext = absPath.split(".").pop()?.toLowerCase();
+    const contentType = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : ext === "webp" ? "image/webp" : "image/png";
+    const fields = {
+      model: modelName,
+      prompt: input.prompt,
+      n: String(input.count || 1),
+      size: mapSize(input.aspectRatio),
+      quality: mapQuality(input.resolution)
+    };
+    const { body, contentType: ct } = buildMultipart(fields, [
+      {
+        name: "image",
+        data: imageBuffer,
+        filename: `image.${ext || "png"}`,
+        contentType
+      }
+    ]);
+    try {
+      const response = await fetch(`${API_BASE}/images/edits`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          "Content-Type": ct
+        },
+        body
+      });
+      const json = await response.json();
+      if (!response.ok || json.error) {
+        return {
+          success: false,
+          images: [],
+          error: json.error?.message || `HTTP ${response.status}`
+        };
+      }
+      return this.parseResponse(json);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return { success: false, images: [], error: msg };
+    }
+  }
+  parseResponse(json) {
+    const images = [];
+    if (json.data) {
+      for (const item of json.data) {
+        if (item.b64_json) {
+          images.push({
+            data: Buffer.from(item.b64_json, "base64"),
+            mimeType: "image/png"
+          });
+        }
+      }
+    }
+    if (images.length === 0) {
+      return { success: false, images: [], error: "No image data in response" };
+    }
+    return { success: true, images };
+  }
+};
+
+// build/providers/openai/index.js
+function initOpenAI() {
+  const apiKey = resolveApiKey("openai");
+  if (!apiKey)
+    return;
+  registerProvider(new OpenAIProvider(apiKey));
+}
+
 // build/cli/commands/init.js
 import { existsSync, writeFileSync as writeFileSync3 } from "node:fs";
-import { resolve as resolve3 } from "node:path";
+import { resolve as resolve4 } from "node:path";
 
 // build/cli/output.js
 function success(data) {
@@ -39382,7 +39567,7 @@ var TEMPLATE = {
   }
 };
 function runInit() {
-  const filePath = resolve3(".imgxrc");
+  const filePath = resolve4(".imgxrc");
   if (existsSync(filePath)) {
     fail(".imgxrc already exists in current directory");
   }
@@ -39439,6 +39624,19 @@ async function runEdit(provider, args) {
 }
 
 // build/cli/commands/config.js
+function extractProvider(args) {
+  const rest = [];
+  let provider = "gemini";
+  for (let i2 = 0; i2 < args.length; i2++) {
+    if (args[i2] === "--provider" && i2 + 1 < args.length) {
+      provider = args[i2 + 1];
+      i2++;
+    } else {
+      rest.push(args[i2]);
+    }
+  }
+  return { provider, rest };
+}
 function runConfig(args) {
   const sub = args[0];
   if (!sub || sub === "list") {
@@ -39446,20 +39644,22 @@ function runConfig(args) {
     return;
   }
   if (sub === "set") {
-    const key = args[1];
-    const value = args[2];
+    const { provider, rest } = extractProvider(args.slice(1));
+    const key = rest[0];
+    const value = rest[1];
     if (!key || !value) {
-      fail("Usage: imgx config set <key> <value>\n  Keys: api-key, provider, model, output-dir, aspect-ratio, resolution");
+      fail("Usage: imgx config set <key> <value> [--provider <name>]\n  Keys: api-key, provider, model, output-dir, aspect-ratio, resolution");
     }
-    setKey(key, value);
+    setKey(key, value, provider);
     return;
   }
   if (sub === "get") {
-    const key = args[1];
+    const { provider, rest } = extractProvider(args.slice(1));
+    const key = rest[0];
     if (!key) {
-      fail("Usage: imgx config get <key>");
+      fail("Usage: imgx config get <key> [--provider <name>]");
     }
-    getKey(key);
+    getKey(key, provider);
     return;
   }
   if (sub === "path") {
@@ -39468,15 +39668,15 @@ function runConfig(args) {
   }
   fail(`Unknown config subcommand: ${sub}. Use: list, set, get, path`);
 }
-function setKey(key, value) {
+function setKey(key, value, provider) {
   const config = loadConfig();
   switch (key) {
     case "api-key": {
       if (!config.providers)
         config.providers = {};
-      if (!config.providers.gemini)
-        config.providers.gemini = {};
-      config.providers.gemini.apiKey = value;
+      if (!config.providers[provider])
+        config.providers[provider] = {};
+      config.providers[provider].apiKey = value;
       break;
     }
     case "provider": {
@@ -39515,13 +39715,13 @@ function setKey(key, value) {
   saveConfig(config);
   success({ key, status: "saved" });
 }
-function getKey(key) {
+function getKey(key, provider) {
   const config = loadConfig();
   switch (key) {
     case "api-key": {
-      const val = config.providers?.gemini?.apiKey;
+      const val = config.providers?.[provider]?.apiKey;
       const masked = val ? val.slice(0, 6) + "..." + val.slice(-4) : void 0;
-      success({ key, value: masked ?? null });
+      success({ key, provider, value: masked ?? null });
       return;
     }
     case "provider":
@@ -39545,16 +39745,22 @@ function getKey(key) {
 }
 function showAll() {
   const config = loadConfig();
-  const hasApiKey = !!config.providers?.gemini?.apiKey;
+  const providerKeys = {};
+  if (config.providers) {
+    for (const [name, prov] of Object.entries(config.providers)) {
+      if (prov?.apiKey)
+        providerKeys[name] = "(set)";
+    }
+  }
   success({
     configPath: getConfigPath(),
-    apiKey: hasApiKey ? "(set)" : "(not set)",
+    apiKeys: Object.keys(providerKeys).length > 0 ? providerKeys : "(none set)",
     defaults: config.defaults ?? {}
   });
 }
 
 // build/cli/index.js
-var VERSION2 = "0.5.2";
+var VERSION2 = "0.6.0";
 var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing CLI
 
 Commands:
@@ -39568,7 +39774,7 @@ Commands:
 Usage:
   imgx generate -p "prompt" -o "./output.png"
   imgx edit -i "./input.png" -p "change background" -o "./output.png"
-  imgx config set api-key <your-gemini-api-key>
+  imgx config set api-key <your-api-key> --provider gemini
   imgx config list
 
 Options:
@@ -39580,7 +39786,7 @@ Options:
   -n, --count <number>       Number of images to generate
   -r, --resolution <size>    Resolution: 1K, 2K, 4K
   -m, --model <model>        Model name
-  --provider <name>          Provider (default: gemini)
+  --provider <name>          Provider: gemini, openai (default: gemini)
   -d, --output-dir <dir>     Output directory
   -h, --help                 Show help
   -v, --version              Show version
@@ -39597,12 +39803,14 @@ Configuration:
 
 Environment variables (override config file):
   GEMINI_API_KEY             Gemini API key
+  OPENAI_API_KEY             OpenAI API key
   IMGX_PROVIDER              Default provider
   IMGX_MODEL                 Default model
   IMGX_OUTPUT_DIR            Default output directory
 `;
 function main() {
   initGemini();
+  initOpenAI();
   const args = process.argv.slice(2);
   const command = args[0];
   if (!command || command === "-h" || command === "--help") {
@@ -39624,7 +39832,7 @@ function main() {
   if (command === "providers") {
     const all = listProviders();
     if (all.length === 0) {
-      fail("No providers configured. Set GEMINI_API_KEY to enable Gemini.");
+      fail("No providers configured. Set GEMINI_API_KEY or OPENAI_API_KEY to enable a provider.");
     }
     const data = all.map((p) => ({
       name: p.info.name,

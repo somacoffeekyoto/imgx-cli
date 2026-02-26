@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.6.0 (2026-02-27)
+
+### Added
+
+- **OpenAI provider** — `gpt-image-1` model with generate and edit support
+  - Native `fetch` implementation (no `openai` npm dependency)
+  - Aspect ratio mapping to OpenAI size strings, resolution mapping to quality parameter
+  - Manual multipart/form-data construction for Node 18 compatibility
+- `OPENAI_API_KEY` environment variable support
+- `--provider` flag for `imgx config set api-key` — manage API keys per provider
+  - `imgx config set api-key <key> --provider openai`
+  - `imgx config list` now shows all configured provider keys
+
+### Changed
+
+- CLI and MCP server now initialize both Gemini and OpenAI providers at startup
+- `imgx providers` and error messages updated for multi-provider context
+- Help text updated with OpenAI provider info and env var
+
 ## 0.5.2 (2026-02-26)
 
 ### Fixed

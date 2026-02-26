@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1 (2026-02-27)
+
+### Fixed
+
+- Default output directory changed from process cwd to `~/Pictures/imgx` — fixes images being saved to AppData when used via MCP (Claude Desktop, etc.)
+
 ## 0.6.0 (2026-02-27)
 
 ### Added

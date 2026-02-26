@@ -39769,7 +39769,7 @@ function showAll() {
 }
 
 // build/cli/index.js
-var VERSION2 = "0.6.0";
+var VERSION2 = "0.6.1";
 var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing CLI
 
 Commands:

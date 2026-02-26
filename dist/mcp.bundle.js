@@ -69594,7 +69594,7 @@ function initOpenAI() {
 // build/mcp/server.js
 var server = new McpServer({
   name: "imgx",
-  version: "0.6.0"
+  version: "0.6.1"
 });
 initGemini();
 initOpenAI();

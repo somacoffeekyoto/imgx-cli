@@ -2,8 +2,6 @@
 
 AI image generation and editing from the terminal. Provider-agnostic design with capability-based abstraction.
 
-<!-- TODO: Add demo GIF showing generate → edit → edit --last workflow -->
-
 ## Install
 
 ### As a Claude Code plugin
@@ -310,83 +308,6 @@ Each provider declares its supported capabilities. The CLI dynamically enables o
 | Provider | Models | Capabilities |
 |----------|--------|-------------|
 | Gemini | `gemini-3-pro-image-preview`, `gemini-2.5-flash-image` | All 7 capabilities |
-
-## Plugin structure
-
-imgx-cli doubles as an AI coding tool plugin. The repository contains:
-
-```
-.claude-plugin/
-├── plugin.json          # Claude Code plugin manifest
-└── marketplace.json     # Marketplace definition for plugin discovery
-.cursor-plugin/
-└── plugin.json          # Cursor plugin manifest
-.mcp.json                # MCP server config (auto-registered on plugin install)
-skills/
-└── image-generation/
-    ├── SKILL.md         # Skill instructions
-    └── references/
-        └── providers.md # Provider and model reference
-dist/
-├── cli.bundle.js        # Bundled CLI (tracked in git for plugin distribution)
-└── mcp.bundle.js        # Bundled MCP server
-```
-
-When installed as a plugin, the tool clones this repository and registers the skill. The skill instructs the AI to execute `dist/cli.bundle.js` via bash when image generation or editing is requested.
-
-### Plugin configuration files
-
-**`.claude-plugin/plugin.json`** — Plugin identity. Fields: `name`, `description`, `version`, `author`. No `category` field (that belongs in `marketplace.json` only).
-
-**`.claude-plugin/marketplace.json`** — Marketplace wrapper. The `source` field must use URL format for self-referencing repositories:
-
-```json
-"source": {
-  "source": "url",
-  "url": "https://github.com/somacoffeekyoto/imgx-cli.git"
-}
-```
-
-**`skills/image-generation/SKILL.md`** — Uses `${CLAUDE_PLUGIN_ROOT}` variable for portable CLI paths. Frontmatter (`name`, `description`) is required for skill registration.
-
-### Release checklist
-
-When releasing a new version:
-
-**1. Update version strings** in all locations:
-
-- `package.json`
-- `server.json` (2 places: root `version` + `packages[0].version`)
-- `src/cli/index.ts` — CLI `--version` output
-- `src/mcp/server.ts` — MCP server version
-- `.claude-plugin/plugin.json`
-- `.claude-plugin/marketplace.json`
-- `.cursor-plugin/plugin.json`
-
-**2. Build and commit:**
-
-```bash
-npm run bundle
-# commit dist/cli.bundle.js and dist/mcp.bundle.js (plugin distribution relies on git)
-git push
-```
-
-**3. Publish to registries:**
-
-```bash
-npm publish --access public --otp=YOUR_OTP
-./mcp-publisher publish          # requires: mcp-publisher login github
-```
-
-**4. Verify distribution:**
-
-| Channel | How to verify |
-|---------|--------------|
-| npm | `npm info imgx-cli version` |
-| MCP Registry | `./mcp-publisher publish` succeeds with new version |
-| PulseMCP | Auto-ingested from MCP Registry (daily/weekly) |
-| Claude Code plugin | Users reinstall to get latest git |
-| Claude Desktop | `npx imgx-cli@latest` fetches new version on next launch |
 
 ## Development
 

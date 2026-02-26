@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.somacoffeekyoto/imgx",
-  "description": "AI image generation and editing CLI with provider abstraction. Generate and edit images from text instructions via CLI or MCP server. Works with Claude Code, Cursor, Gemini CLI, and 10+ MCP-compatible tools.",
+  "description": "AI image generation and editing via CLI or MCP. Text-based editing, multi-provider.",
   "repository": {
     "url": "https://github.com/somacoffeekyoto/imgx-cli",
     "source": "github"

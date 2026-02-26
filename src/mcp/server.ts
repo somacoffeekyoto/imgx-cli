@@ -9,7 +9,7 @@ import type { GenerateInput, EditInput } from "../core/types.js";
 
 const server = new McpServer({
   name: "imgx",
-  version: "0.5.0",
+  version: "0.5.1",
 });
 
 // プロバイダ初期化

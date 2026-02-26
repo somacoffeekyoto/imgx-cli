@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.somacoffeekyoto/imgx",
+  "description": "AI image generation and editing CLI with provider abstraction. Generate and edit images from text instructions via CLI or MCP server. Works with Claude Code, Cursor, Gemini CLI, and 10+ MCP-compatible tools.",
+  "repository": {
+    "url": "https://github.com/somacoffeekyoto/imgx-cli",
+    "source": "github"
+  },
+  "version": "0.5.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "imgx-cli",
+      "version": "0.5.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Gemini API key from Google AI Studio. Optional if configured via 'imgx config set api-key'.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "GEMINI_API_KEY"
+        }
+      ]
+    }
+  ]
+}

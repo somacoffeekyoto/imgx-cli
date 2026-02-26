@@ -9,7 +9,7 @@ import { runEdit } from "./commands/edit.js";
 import { runConfig } from "./commands/config.js";
 import * as out from "./output.js";
 
-const VERSION = "0.5.0";
+const VERSION = "0.5.1";
 
 const HELP = `imgx v${VERSION} — AI image generation and editing CLI
 

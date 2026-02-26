@@ -1,6 +1,7 @@
 {
   "name": "imgx-cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
+  "mcpName": "io.github.somacoffeekyoto/imgx",
   "description": "AI image generation and editing CLI with provider abstraction",
   "type": "module",
   "bin": {

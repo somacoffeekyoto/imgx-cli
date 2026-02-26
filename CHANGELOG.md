@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.1 (2026-02-26)
+
+### Added
+
+- Published to npm (`npm install -g imgx-cli` / `npx imgx`)
+- `mcpName` field for MCP Registry integration
+- `server.json` for MCP Registry publishing
+
+### Changed
+
+- README: added Google AI Studio link for API key setup, MCP env section note
+
 ## 0.5.0 (2026-02-26)
 
 ### Added

@@ -1,0 +1,14 @@
+{
+  "name": "imgx-cli",
+  "displayName": "imgx-cli",
+  "description": "AI image generation and editing CLI with provider abstraction",
+  "version": "0.5.0",
+  "author": {
+    "name": "SOMA COFFEE KYOTO"
+  },
+  "homepage": "https://github.com/somacoffeekyoto/imgx-cli",
+  "repository": "https://github.com/somacoffeekyoto/imgx-cli",
+  "license": "MIT",
+  "keywords": ["image-generation", "image-editing", "gemini", "ai", "cli", "mcp"],
+  "skills": "./skills/"
+}

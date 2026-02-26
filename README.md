@@ -273,24 +273,28 @@ Each provider declares its supported capabilities. The CLI dynamically enables o
 |----------|--------|-------------|
 | Gemini | `gemini-3-pro-image-preview`, `gemini-2.5-flash-image` | All 7 capabilities |
 
-## Claude Code plugin structure
+## Plugin structure
 
-imgx-cli doubles as a Claude Code plugin. The repository contains:
+imgx-cli doubles as an AI coding tool plugin. The repository contains:
 
 ```
 .claude-plugin/
-├── plugin.json          # Plugin manifest (name, version, author)
+├── plugin.json          # Claude Code plugin manifest
 └── marketplace.json     # Marketplace definition for plugin discovery
+.cursor-plugin/
+└── plugin.json          # Cursor plugin manifest
 .mcp.json                # MCP server config (auto-registered on plugin install)
 skills/
 └── image-generation/
-    └── SKILL.md         # Skill instructions for Claude Code
+    ├── SKILL.md         # Skill instructions
+    └── references/
+        └── providers.md # Provider and model reference
 dist/
 ├── cli.bundle.js        # Bundled CLI (tracked in git for plugin distribution)
 └── mcp.bundle.js        # Bundled MCP server
 ```
 
-When installed as a plugin, Claude Code clones this repository and registers the skill. The skill instructs Claude Code to execute `dist/cli.bundle.js` via bash when image generation or editing is requested.
+When installed as a plugin, the tool clones this repository and registers the skill. The skill instructs the AI to execute `dist/cli.bundle.js` via bash when image generation or editing is requested.
 
 ### Plugin configuration files
 
@@ -309,12 +313,13 @@ When installed as a plugin, Claude Code clones this repository and registers the
 
 ### Version updates
 
-When releasing a new version, update the version string in all three locations:
+When releasing a new version, update the version string in all locations:
 
 1. `package.json` — npm package version
 2. `src/cli/index.ts` — CLI `--version` output
-3. `.claude-plugin/plugin.json` — Plugin manifest version
+3. `.claude-plugin/plugin.json` — Claude Code plugin manifest version
 4. `.claude-plugin/marketplace.json` — Marketplace plugin entry version
+5. `.cursor-plugin/plugin.json` — Cursor plugin manifest version
 
 Then rebuild (`npm run bundle`) and commit `dist/cli.bundle.js` since plugin distribution relies on the git repository.
 

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect width="256" height="256" rx="32" fill="#1a1a2e"/>
+  <!-- Terminal > symbol -->
+  <polyline points="40,72 80,112 40,152" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Cursor underscore -->
+  <line x1="88" y1="152" x2="128" y2="152" stroke="#00d2d3" stroke-width="14" stroke-linecap="round"/>
+  <!-- Image frame -->
+  <rect x="112" y="56" width="108" height="96" rx="8" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <!-- Mountain -->
+  <polyline points="122,140 152,100 172,120 200,84 220,140" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Sun -->
+  <circle cx="192" cy="82" r="10" fill="#00d2d3"/>
+  <!-- Bottom bar -->
+  <rect x="112" y="172" width="108" height="12" rx="6" fill="#00d2d3"/>
+</svg>

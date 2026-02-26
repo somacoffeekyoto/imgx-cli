@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.2 (2026-02-26)
+
+### Fixed
+
+- `imgx-mcp` bin: added missing shebang (`#!/usr/bin/env node`) — fixes `npx imgx-mcp` and Claude Desktop MCP integration on all platforms
+
+### Changed
+
+- README: add Claude Desktop MCP configuration (Windows `cmd /c` + macOS/Linux)
+- README: switch all MCP config examples from local `node` path to `npx`
+
 ## 0.5.1 (2026-02-26)
 
 ### Added

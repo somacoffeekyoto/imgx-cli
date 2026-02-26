@@ -27,5 +27,8 @@ await build({
   ...commonOptions,
   entryPoints: ["build/mcp/server.js"],
   outfile: "dist/mcp.bundle.js",
+  banner: {
+    js: "#!/usr/bin/env node\n" + commonOptions.banner.js,
+  },
 });
 console.log("Bundle created: dist/mcp.bundle.js");

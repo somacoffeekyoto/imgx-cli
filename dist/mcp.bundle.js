@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { createRequire } from 'module'; const require = createRequire(import.meta.url);
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -69377,7 +69378,7 @@ function initGemini() {
 // build/mcp/server.js
 var server = new McpServer({
   name: "imgx",
-  version: "0.5.1"
+  version: "0.5.2"
 });
 initGemini();
 function resolveProvider(providerName) {

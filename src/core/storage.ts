@@ -1,7 +1,9 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
+import { homedir } from "node:os";
 import type { GeneratedImage } from "./types.js";
+import { resolveDefault } from "./config.js";
 
 const MIME_TO_EXT: Record<string, string> = {
   "image/png": ".png",
@@ -26,6 +28,14 @@ export function readImageAsBase64(filePath: string): {
   return { data: buffer.toString("base64"), mimeType };
 }
 
+/** Resolve output directory: explicit arg → env/config → ~/Pictures/imgx */
+function fallbackOutputDir(outputDir?: string): string {
+  if (outputDir) return outputDir;
+  const configured = resolveDefault("outputDir");
+  if (configured) return configured;
+  return join(homedir(), "Pictures", "imgx");
+}
+
 export function saveImage(
   image: GeneratedImage,
   outputPath?: string,
@@ -35,7 +45,7 @@ export function saveImage(
 
   const filePath = outputPath
     ? resolve(outputPath)
-    : resolve(outputDir || ".", `imgx-${randomUUID().slice(0, 8)}${ext}`);
+    : resolve(fallbackOutputDir(outputDir), `imgx-${randomUUID().slice(0, 8)}${ext}`);
 
   mkdirSync(dirname(filePath), { recursive: true });
   writeFileSync(filePath, image.data);

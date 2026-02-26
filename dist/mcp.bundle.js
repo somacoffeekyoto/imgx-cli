@@ -52131,6 +52131,28 @@ function resolveApiKey(providerName) {
   const config2 = loadConfig();
   return config2.providers?.[providerName]?.apiKey;
 }
+function loadProjectConfig() {
+  try {
+    const raw = readFileSync(resolve(".imgxrc"), "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+function resolveDefault(key) {
+  const envMap = {
+    provider: process.env.IMGX_PROVIDER,
+    model: process.env.IMGX_MODEL,
+    outputDir: process.env.IMGX_OUTPUT_DIR
+  };
+  if (envMap[key])
+    return envMap[key];
+  const project = loadProjectConfig();
+  if (project.defaults?.[key])
+    return project.defaults[key];
+  const config2 = loadConfig();
+  return config2.defaults?.[key];
+}
 function saveLastOutput(filePaths) {
   const dir = configDir();
   mkdirSync(dir, { recursive: true });
@@ -69226,8 +69248,9 @@ function getApiKeyFromEnv() {
 
 // build/core/storage.js
 import { readFileSync as readFileSync2, writeFileSync as writeFileSync2, mkdirSync as mkdirSync2 } from "node:fs";
-import { dirname, resolve as resolve2 } from "node:path";
+import { dirname, join as join2, resolve as resolve2 } from "node:path";
 import { randomUUID } from "node:crypto";
+import { homedir as homedir2 } from "node:os";
 var MIME_TO_EXT = {
   "image/png": ".png",
   "image/jpeg": ".jpg",
@@ -69240,9 +69263,17 @@ function readImageAsBase64(filePath) {
   const mimeType = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : ext === "webp" ? "image/webp" : "image/png";
   return { data: buffer.toString("base64"), mimeType };
 }
+function fallbackOutputDir(outputDir) {
+  if (outputDir)
+    return outputDir;
+  const configured = resolveDefault("outputDir");
+  if (configured)
+    return configured;
+  return join2(homedir2(), "Pictures", "imgx");
+}
 function saveImage(image, outputPath, outputDir) {
   const ext = MIME_TO_EXT[image.mimeType] || ".png";
-  const filePath = outputPath ? resolve2(outputPath) : resolve2(outputDir || ".", `imgx-${randomUUID().slice(0, 8)}${ext}`);
+  const filePath = outputPath ? resolve2(outputPath) : resolve2(fallbackOutputDir(outputDir), `imgx-${randomUUID().slice(0, 8)}${ext}`);
   mkdirSync2(dirname(filePath), { recursive: true });
   writeFileSync2(filePath, image.data);
   return filePath;

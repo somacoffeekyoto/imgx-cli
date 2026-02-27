@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.1 (2026-02-27)
+
+### Fixed
+
+- Remove `MULTIPLE_OUTPUTS` capability from Gemini provider — `gemini-3-pro-image-preview` does not support `candidateCount`, causing errors when `count > 1`
+
 ## 0.7.0 (2026-02-27)
 
 ### Added
@@ -124,7 +130,7 @@ Initial release.
 - `edit` command: image editing with text instructions
 - `providers` command: list available providers
 - `capabilities` command: show provider capabilities
-- Gemini provider with 7 capabilities (generate, edit, aspect ratio, resolution, multi-output, reference images, person control)
+- Gemini provider with 6 capabilities (generate, edit, aspect ratio, resolution, reference images, person control)
 - Capability-based provider abstraction (model-independent core + model-dependent providers)
 - JSON output for scripting and tool integration
 - Single-file esbuild bundle

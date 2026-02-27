@@ -39265,7 +39265,6 @@ var GEMINI_PROVIDER_INFO = {
     Capability.ASPECT_RATIO,
     Capability.IMAGE_EDITING,
     Capability.RESOLUTION_CONTROL,
-    Capability.MULTIPLE_OUTPUTS,
     Capability.REFERENCE_IMAGES,
     Capability.PERSON_CONTROL
   ]),
@@ -39777,7 +39776,7 @@ function showAll() {
 }
 
 // build/cli/index.js
-var VERSION2 = "0.7.0";
+var VERSION2 = "0.7.1";
 var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing CLI
 
 Commands:

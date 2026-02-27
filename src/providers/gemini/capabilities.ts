@@ -9,7 +9,6 @@ export const GEMINI_PROVIDER_INFO: ProviderInfo = {
     Capability.ASPECT_RATIO,
     Capability.IMAGE_EDITING,
     Capability.RESOLUTION_CONTROL,
-    Capability.MULTIPLE_OUTPUTS,
     Capability.REFERENCE_IMAGES,
     Capability.PERSON_CONTROL,
   ]),

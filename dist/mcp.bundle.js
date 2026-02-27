@@ -69303,7 +69303,6 @@ var GEMINI_PROVIDER_INFO = {
     Capability.ASPECT_RATIO,
     Capability.IMAGE_EDITING,
     Capability.RESOLUTION_CONTROL,
-    Capability.MULTIPLE_OUTPUTS,
     Capability.REFERENCE_IMAGES,
     Capability.PERSON_CONTROL
   ]),
@@ -69608,7 +69607,7 @@ function buildImageContent(images, paths, extra) {
 }
 var server = new McpServer({
   name: "imgx",
-  version: "0.7.0"
+  version: "0.7.1"
 });
 initGemini();
 initOpenAI();

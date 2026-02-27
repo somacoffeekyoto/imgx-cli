@@ -24,7 +24,7 @@ function buildImageContent(
 
 const server = new McpServer({
   name: "imgx",
-  version: "0.6.2",
+  version: "0.7.0",
 });
 
 // プロバイダ初期化
@@ -59,6 +59,7 @@ server.tool(
       .describe("Aspect ratio"),
     resolution: z.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
     count: z.number().int().min(1).max(4).optional().describe("Number of images"),
+    output_format: z.enum(["png", "jpeg", "webp"]).optional().describe("Output format"),
     model: z.string().optional().describe("Model name"),
     provider: z.string().optional().describe("Provider name"),
   },
@@ -70,6 +71,7 @@ server.tool(
         aspectRatio: args.aspect_ratio,
         resolution: args.resolution,
         count: args.count,
+        outputFormat: args.output_format,
       };
 
       const result = await prov.generate(input, args.model);
@@ -111,6 +113,7 @@ server.tool(
       .optional()
       .describe("Aspect ratio"),
     resolution: z.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
+    output_format: z.enum(["png", "jpeg", "webp"]).optional().describe("Output format"),
     model: z.string().optional().describe("Model name"),
     provider: z.string().optional().describe("Provider name"),
   },
@@ -128,6 +131,7 @@ server.tool(
         inputImage: args.input,
         aspectRatio: args.aspect_ratio,
         resolution: args.resolution,
+        outputFormat: args.output_format,
       };
 
       const result = await prov.edit(input, args.model);
@@ -159,6 +163,7 @@ server.tool(
       .optional()
       .describe("Aspect ratio"),
     resolution: z.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
+    output_format: z.enum(["png", "jpeg", "webp"]).optional().describe("Output format"),
     model: z.string().optional().describe("Model name"),
     provider: z.string().optional().describe("Provider name"),
   },
@@ -183,6 +188,7 @@ server.tool(
         inputImage: lastPaths[0],
         aspectRatio: args.aspect_ratio,
         resolution: args.resolution,
+        outputFormat: args.output_format,
       };
 
       const result = await prov.edit(input, args.model);

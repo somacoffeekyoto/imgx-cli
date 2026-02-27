@@ -108,6 +108,7 @@ imgx edit --last -p "Crop to 16:9" -o final.png
 | `--aspect-ratio` | `-a` | `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2:3`, `3:2` |
 | `--resolution` | `-r` | `1K`, `2K`, `4K` |
 | `--count` | `-n` | Number of images to generate |
+| `--format` | `-f` | Output format: `png`, `jpeg`, `webp` (OpenAI only) |
 | `--model` | `-m` | Model name |
 | `--provider` | | Provider name (default: `gemini`) |
 | `--output-dir` | `-d` | Output directory |
@@ -315,13 +316,14 @@ Each provider declares its supported capabilities. The CLI dynamically enables o
 | `MULTIPLE_OUTPUTS` | Generate multiple images per request |
 | `REFERENCE_IMAGES` | Use reference images for guidance |
 | `PERSON_CONTROL` | Control person generation in output |
+| `OUTPUT_FORMAT` | Choose output format (PNG, JPEG, WebP) |
 
 ### Current providers
 
 | Provider | Models | Capabilities |
 |----------|--------|-------------|
-| Gemini | `gemini-3-pro-image-preview`, `gemini-2.5-flash-image` | All 7 capabilities |
-| OpenAI | `gpt-image-1` | Generate, edit, aspect ratio, multi-output |
+| Gemini | `gemini-3-pro-image-preview`, `gemini-2.5-flash-image` | All 7 base capabilities |
+| OpenAI | `gpt-image-1` | Generate, edit, aspect ratio, multi-output, output format |
 
 ## Development
 

@@ -39252,6 +39252,7 @@ var Capability;
   Capability2["REFERENCE_IMAGES"] = "REFERENCE_IMAGES";
   Capability2["PERSON_CONTROL"] = "PERSON_CONTROL";
   Capability2["STYLE_CONTROL"] = "STYLE_CONTROL";
+  Capability2["OUTPUT_FORMAT"] = "OUTPUT_FORMAT";
 })(Capability || (Capability = {}));
 
 // build/providers/gemini/capabilities.js
@@ -39384,7 +39385,8 @@ var OPENAI_PROVIDER_INFO = {
     Capability.TEXT_TO_IMAGE,
     Capability.ASPECT_RATIO,
     Capability.IMAGE_EDITING,
-    Capability.MULTIPLE_OUTPUTS
+    Capability.MULTIPLE_OUTPUTS,
+    Capability.OUTPUT_FORMAT
   ]),
   aspectRatios: ["1:1", "3:2", "2:3", "16:9", "9:16", "4:3", "3:4"],
   resolutions: ["1K", "2K", "4K"]
@@ -39465,7 +39467,8 @@ var OpenAIProvider = class {
           prompt: input.prompt,
           n: input.count || 1,
           size: mapSize(input.aspectRatio),
-          quality: mapQuality(input.resolution)
+          quality: mapQuality(input.resolution),
+          ...input.outputFormat ? { output_format: input.outputFormat } : {}
         })
       });
       const json = await response.json();
@@ -39476,7 +39479,7 @@ var OpenAIProvider = class {
           error: json.error?.message || `HTTP ${response.status}`
         };
       }
-      return this.parseResponse(json);
+      return this.parseResponse(json, input.outputFormat);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { success: false, images: [], error: msg };
@@ -39493,7 +39496,8 @@ var OpenAIProvider = class {
       prompt: input.prompt,
       n: String(input.count || 1),
       size: mapSize(input.aspectRatio),
-      quality: mapQuality(input.resolution)
+      quality: mapQuality(input.resolution),
+      ...input.outputFormat ? { output_format: input.outputFormat } : {}
     };
     const { body, contentType: ct } = buildMultipart(fields, [
       {
@@ -39520,20 +39524,22 @@ var OpenAIProvider = class {
           error: json.error?.message || `HTTP ${response.status}`
         };
       }
-      return this.parseResponse(json);
+      return this.parseResponse(json, input.outputFormat);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { success: false, images: [], error: msg };
     }
   }
-  parseResponse(json) {
+  parseResponse(json, outputFormat) {
+    const mimeMap = { png: "image/png", jpeg: "image/jpeg", webp: "image/webp" };
+    const mimeType = mimeMap[outputFormat || "png"] || "image/png";
     const images = [];
     if (json.data) {
       for (const item of json.data) {
         if (item.b64_json) {
           images.push({
             data: Buffer.from(item.b64_json, "base64"),
-            mimeType: "image/png"
+            mimeType
           });
         }
       }
@@ -39590,7 +39596,8 @@ async function runGenerate(provider, args) {
     prompt: args.prompt,
     aspectRatio: args.aspectRatio,
     count: args.count,
-    resolution: args.resolution
+    resolution: args.resolution,
+    outputFormat: args.outputFormat
   }, args.model);
   if (!result.success || result.images.length === 0) {
     fail(result.error || "Generation failed");
@@ -39618,7 +39625,8 @@ async function runEdit(provider, args) {
     inputImage: args.inputImage,
     prompt: args.prompt,
     aspectRatio: args.aspectRatio,
-    resolution: args.resolution
+    resolution: args.resolution,
+    outputFormat: args.outputFormat
   }, args.model);
   if (!result.success || result.images.length === 0) {
     fail(result.error || "Edit failed");
@@ -39769,7 +39777,7 @@ function showAll() {
 }
 
 // build/cli/index.js
-var VERSION2 = "0.6.2";
+var VERSION2 = "0.7.0";
 var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing CLI
 
 Commands:
@@ -39794,6 +39802,7 @@ Options:
   -a, --aspect-ratio <ratio> Aspect ratio (e.g., 16:9, 1:1)
   -n, --count <number>       Number of images to generate
   -r, --resolution <size>    Resolution: 1K, 2K, 4K
+  -f, --format <type>        Output format: png, jpeg, webp (OpenAI only)
   -m, --model <model>        Model name
   --provider <name>          Provider: gemini, openai (default: gemini)
   -d, --output-dir <dir>     Output directory
@@ -39861,6 +39870,7 @@ function main() {
       "aspect-ratio": { type: "string", short: "a" },
       count: { type: "string", short: "n" },
       resolution: { type: "string", short: "r" },
+      format: { type: "string", short: "f" },
       model: { type: "string", short: "m" },
       provider: { type: "string" },
       "output-dir": { type: "string", short: "d" },
@@ -39895,6 +39905,7 @@ function main() {
     outputDir: values["output-dir"] || resolveDefault("outputDir") || void 0,
     aspectRatio: values["aspect-ratio"] || resolveDefault("aspectRatio") || void 0,
     resolution: values.resolution || resolveDefault("resolution") || void 0,
+    outputFormat: values.format || void 0,
     model,
     count: values.count ? parseInt(values.count, 10) : void 0
   };

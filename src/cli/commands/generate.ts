@@ -10,6 +10,7 @@ interface GenerateArgs {
   aspectRatio?: string;
   count?: number;
   resolution?: string;
+  outputFormat?: "png" | "jpeg" | "webp";
   model?: string;
 }
 
@@ -23,6 +24,7 @@ export async function runGenerate(
       aspectRatio: args.aspectRatio,
       count: args.count,
       resolution: args.resolution,
+      outputFormat: args.outputFormat,
     },
     args.model
   );

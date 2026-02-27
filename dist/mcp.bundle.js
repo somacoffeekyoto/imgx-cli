@@ -69290,6 +69290,7 @@ var Capability;
   Capability2["REFERENCE_IMAGES"] = "REFERENCE_IMAGES";
   Capability2["PERSON_CONTROL"] = "PERSON_CONTROL";
   Capability2["STYLE_CONTROL"] = "STYLE_CONTROL";
+  Capability2["OUTPUT_FORMAT"] = "OUTPUT_FORMAT";
 })(Capability || (Capability = {}));
 
 // build/providers/gemini/capabilities.js
@@ -69422,7 +69423,8 @@ var OPENAI_PROVIDER_INFO = {
     Capability.TEXT_TO_IMAGE,
     Capability.ASPECT_RATIO,
     Capability.IMAGE_EDITING,
-    Capability.MULTIPLE_OUTPUTS
+    Capability.MULTIPLE_OUTPUTS,
+    Capability.OUTPUT_FORMAT
   ]),
   aspectRatios: ["1:1", "3:2", "2:3", "16:9", "9:16", "4:3", "3:4"],
   resolutions: ["1K", "2K", "4K"]
@@ -69503,7 +69505,8 @@ var OpenAIProvider = class {
           prompt: input.prompt,
           n: input.count || 1,
           size: mapSize(input.aspectRatio),
-          quality: mapQuality(input.resolution)
+          quality: mapQuality(input.resolution),
+          ...input.outputFormat ? { output_format: input.outputFormat } : {}
         })
       });
       const json2 = await response.json();
@@ -69514,7 +69517,7 @@ var OpenAIProvider = class {
           error: json2.error?.message || `HTTP ${response.status}`
         };
       }
-      return this.parseResponse(json2);
+      return this.parseResponse(json2, input.outputFormat);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { success: false, images: [], error: msg };
@@ -69531,7 +69534,8 @@ var OpenAIProvider = class {
       prompt: input.prompt,
       n: String(input.count || 1),
       size: mapSize(input.aspectRatio),
-      quality: mapQuality(input.resolution)
+      quality: mapQuality(input.resolution),
+      ...input.outputFormat ? { output_format: input.outputFormat } : {}
     };
     const { body, contentType: ct } = buildMultipart(fields, [
       {
@@ -69558,20 +69562,22 @@ var OpenAIProvider = class {
           error: json2.error?.message || `HTTP ${response.status}`
         };
       }
-      return this.parseResponse(json2);
+      return this.parseResponse(json2, input.outputFormat);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { success: false, images: [], error: msg };
     }
   }
-  parseResponse(json2) {
+  parseResponse(json2, outputFormat) {
+    const mimeMap = { png: "image/png", jpeg: "image/jpeg", webp: "image/webp" };
+    const mimeType = mimeMap[outputFormat || "png"] || "image/png";
     const images = [];
     if (json2.data) {
       for (const item of json2.data) {
         if (item.b64_json) {
           images.push({
             data: Buffer.from(item.b64_json, "base64"),
-            mimeType: "image/png"
+            mimeType
           });
         }
       }
@@ -69602,7 +69608,7 @@ function buildImageContent(images, paths, extra) {
 }
 var server = new McpServer({
   name: "imgx",
-  version: "0.6.2"
+  version: "0.7.0"
 });
 initGemini();
 initOpenAI();
@@ -69622,6 +69628,7 @@ server.tool("generate_image", "Generate an image from a text prompt", {
   aspect_ratio: external_exports3.enum(["1:1", "2:3", "3:2", "3:4", "4:3", "9:16", "16:9"]).optional().describe("Aspect ratio"),
   resolution: external_exports3.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
   count: external_exports3.number().int().min(1).max(4).optional().describe("Number of images"),
+  output_format: external_exports3.enum(["png", "jpeg", "webp"]).optional().describe("Output format"),
   model: external_exports3.string().optional().describe("Model name"),
   provider: external_exports3.string().optional().describe("Provider name")
 }, async (args) => {
@@ -69631,7 +69638,8 @@ server.tool("generate_image", "Generate an image from a text prompt", {
       prompt: args.prompt,
       aspectRatio: args.aspect_ratio,
       resolution: args.resolution,
-      count: args.count
+      count: args.count,
+      outputFormat: args.output_format
     };
     const result = await prov.generate(input, args.model);
     if (!result.success || result.images.length === 0) {
@@ -69657,6 +69665,7 @@ server.tool("edit_image", "Edit an existing image with text instructions", {
   output_dir: external_exports3.string().optional().describe("Output directory"),
   aspect_ratio: external_exports3.enum(["1:1", "2:3", "3:2", "3:4", "4:3", "9:16", "16:9"]).optional().describe("Aspect ratio"),
   resolution: external_exports3.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
+  output_format: external_exports3.enum(["png", "jpeg", "webp"]).optional().describe("Output format"),
   model: external_exports3.string().optional().describe("Model name"),
   provider: external_exports3.string().optional().describe("Provider name")
 }, async (args) => {
@@ -69671,7 +69680,8 @@ server.tool("edit_image", "Edit an existing image with text instructions", {
       prompt: args.prompt,
       inputImage: args.input,
       aspectRatio: args.aspect_ratio,
-      resolution: args.resolution
+      resolution: args.resolution,
+      outputFormat: args.output_format
     };
     const result = await prov.edit(input, args.model);
     if (!result.success || result.images.length === 0) {
@@ -69691,6 +69701,7 @@ server.tool("edit_last", "Edit the last generated/edited image with new text ins
   output_dir: external_exports3.string().optional().describe("Output directory"),
   aspect_ratio: external_exports3.enum(["1:1", "2:3", "3:2", "3:4", "4:3", "9:16", "16:9"]).optional().describe("Aspect ratio"),
   resolution: external_exports3.enum(["1K", "2K", "4K"]).optional().describe("Output resolution"),
+  output_format: external_exports3.enum(["png", "jpeg", "webp"]).optional().describe("Output format"),
   model: external_exports3.string().optional().describe("Model name"),
   provider: external_exports3.string().optional().describe("Provider name")
 }, async (args) => {
@@ -69711,7 +69722,8 @@ server.tool("edit_last", "Edit the last generated/edited image with new text ins
       prompt: args.prompt,
       inputImage: lastPaths[0],
       aspectRatio: args.aspect_ratio,
-      resolution: args.resolution
+      resolution: args.resolution,
+      outputFormat: args.output_format
     };
     const result = await prov.edit(input, args.model);
     if (!result.success || result.images.length === 0) {

@@ -10,7 +10,7 @@ import { runEdit } from "./commands/edit.js";
 import { runConfig } from "./commands/config.js";
 import * as out from "./output.js";
 
-const VERSION = "0.6.2";
+const VERSION = "0.7.0";
 
 const HELP = `imgx v${VERSION} — AI image generation and editing CLI
 
@@ -36,6 +36,7 @@ Options:
   -a, --aspect-ratio <ratio> Aspect ratio (e.g., 16:9, 1:1)
   -n, --count <number>       Number of images to generate
   -r, --resolution <size>    Resolution: 1K, 2K, 4K
+  -f, --format <type>        Output format: png, jpeg, webp (OpenAI only)
   -m, --model <model>        Model name
   --provider <name>          Provider: gemini, openai (default: gemini)
   -d, --output-dir <dir>     Output directory
@@ -114,6 +115,7 @@ function main(): void {
       "aspect-ratio": { type: "string", short: "a" },
       count: { type: "string", short: "n" },
       resolution: { type: "string", short: "r" },
+      format: { type: "string", short: "f" },
       model: { type: "string", short: "m" },
       provider: { type: "string" },
       "output-dir": { type: "string", short: "d" },
@@ -176,6 +178,7 @@ function main(): void {
       (values.resolution as string) ||
       resolveDefault("resolution") ||
       undefined,
+    outputFormat: (values.format as "png" | "jpeg" | "webp" | undefined) || undefined,
     model,
     count: values.count ? parseInt(values.count as string, 10) : undefined,
   };

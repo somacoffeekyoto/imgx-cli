@@ -9,6 +9,7 @@ export const OPENAI_PROVIDER_INFO: ProviderInfo = {
     Capability.ASPECT_RATIO,
     Capability.IMAGE_EDITING,
     Capability.MULTIPLE_OUTPUTS,
+    Capability.OUTPUT_FORMAT,
   ]),
   aspectRatios: ["1:1", "3:2", "2:3", "16:9", "9:16", "4:3", "3:4"],
   resolutions: ["1K", "2K", "4K"],

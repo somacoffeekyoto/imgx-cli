@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 (2026-02-27)
+
+### Added
+
+- **Output format selection** — `--format` flag (CLI) and `output_format` parameter (MCP) to choose between `png`, `jpeg`, or `webp` output. Currently supported by OpenAI provider (`gpt-image-1`). Gemini provider outputs PNG regardless of format setting.
+- `OUTPUT_FORMAT` capability added to provider capability system
+
 ## 0.6.2 (2026-02-27)
 
 ### Added

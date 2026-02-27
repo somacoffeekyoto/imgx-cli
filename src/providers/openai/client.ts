@@ -105,6 +105,7 @@ export class OpenAIProvider implements ImageProvider {
           n: input.count || 1,
           size: mapSize(input.aspectRatio),
           quality: mapQuality(input.resolution),
+          ...(input.outputFormat ? { output_format: input.outputFormat } : {}),
         }),
       });
 
@@ -118,7 +119,7 @@ export class OpenAIProvider implements ImageProvider {
         };
       }
 
-      return this.parseResponse(json);
+      return this.parseResponse(json, input.outputFormat);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { success: false, images: [], error: msg };
@@ -143,6 +144,7 @@ export class OpenAIProvider implements ImageProvider {
       n: String(input.count || 1),
       size: mapSize(input.aspectRatio),
       quality: mapQuality(input.resolution),
+      ...(input.outputFormat ? { output_format: input.outputFormat } : {}),
     };
 
     const { body, contentType: ct } = buildMultipart(fields, [
@@ -174,14 +176,16 @@ export class OpenAIProvider implements ImageProvider {
         };
       }
 
-      return this.parseResponse(json);
+      return this.parseResponse(json, input.outputFormat);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { success: false, images: [], error: msg };
     }
   }
 
-  private parseResponse(json: OpenAIImageResponse): ImageResult {
+  private parseResponse(json: OpenAIImageResponse, outputFormat?: "png" | "jpeg" | "webp"): ImageResult {
+    const mimeMap: Record<string, string> = { png: "image/png", jpeg: "image/jpeg", webp: "image/webp" };
+    const mimeType = mimeMap[outputFormat || "png"] || "image/png";
     const images: GeneratedImage[] = [];
 
     if (json.data) {
@@ -189,7 +193,7 @@ export class OpenAIProvider implements ImageProvider {
         if (item.b64_json) {
           images.push({
             data: Buffer.from(item.b64_json, "base64"),
-            mimeType: "image/png",
+            mimeType,
           });
         }
       }

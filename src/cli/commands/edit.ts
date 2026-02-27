@@ -12,6 +12,7 @@ interface EditArgs {
   outputDir?: string;
   aspectRatio?: string;
   resolution?: string;
+  outputFormat?: "png" | "jpeg" | "webp";
   model?: string;
 }
 
@@ -39,6 +40,7 @@ export async function runEdit(
       prompt: args.prompt,
       aspectRatio: args.aspectRatio,
       resolution: args.resolution,
+      outputFormat: args.outputFormat,
     },
     args.model
   );

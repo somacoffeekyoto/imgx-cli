@@ -9,6 +9,7 @@ export enum Capability {
   REFERENCE_IMAGES = "REFERENCE_IMAGES",
   PERSON_CONTROL = "PERSON_CONTROL",
   STYLE_CONTROL = "STYLE_CONTROL",
+  OUTPUT_FORMAT = "OUTPUT_FORMAT",
 }
 
 // === 共通入出力型 ===
@@ -19,6 +20,7 @@ export interface GenerateInput {
   aspectRatio?: string;
   count?: number;
   resolution?: string;
+  outputFormat?: "png" | "jpeg" | "webp";
 }
 
 export interface EditInput extends GenerateInput {

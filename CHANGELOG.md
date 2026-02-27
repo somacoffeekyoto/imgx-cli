@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0 (2026-02-27)
+
+### Fixed
+
+- **MCP inline preview size guard** — images exceeding ~780KB base64 (Claude Desktop's 1MB tool result limit) are now gracefully skipped from inline preview. Full-quality images are always saved to disk. Previously, oversized images caused silent display failures in Claude Desktop.
+
 ## 0.7.1 (2026-02-27)
 
 ### Fixed

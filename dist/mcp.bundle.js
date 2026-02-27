@@ -69597,17 +69597,28 @@ function initOpenAI() {
 }
 
 // build/mcp/server.js
+var MAX_INLINE_BASE64 = 8e5;
 function buildImageContent(images, paths, extra) {
   const content = [];
+  let skipped = 0;
   for (const img of images) {
-    content.push({ type: "image", data: img.data.toString("base64"), mimeType: img.mimeType });
+    const b64 = img.data.toString("base64");
+    if (b64.length <= MAX_INLINE_BASE64) {
+      content.push({ type: "image", data: b64, mimeType: img.mimeType });
+    } else {
+      skipped++;
+    }
   }
-  content.push({ type: "text", text: JSON.stringify({ success: true, filePaths: paths, ...extra }) });
+  const info = { success: true, filePaths: paths, ...extra };
+  if (skipped > 0) {
+    info.note = `${skipped} image(s) too large for inline preview. Open file(s) directly.`;
+  }
+  content.push({ type: "text", text: JSON.stringify(info) });
   return content;
 }
 var server = new McpServer({
   name: "imgx",
-  version: "0.7.1"
+  version: "0.8.0"
 });
 initGemini();
 initOpenAI();

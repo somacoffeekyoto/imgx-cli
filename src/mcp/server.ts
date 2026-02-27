@@ -8,9 +8,6 @@ import { saveImage } from "../core/storage.js";
 import { saveLastOutput, loadLastOutput } from "../core/config.js";
 import type { GenerateInput, EditInput, GeneratedImage } from "../core/types.js";
 
-/** Max base64 size for inline preview (~780KB, safely under Claude Desktop's 1MB tool result limit) */
-const MAX_INLINE_BASE64 = 800_000;
-
 /** Build MCP content array with image previews + file path info */
 function buildImageContent(
   images: GeneratedImage[],
@@ -18,26 +15,16 @@ function buildImageContent(
   extra?: Record<string, unknown>
 ): Array<{ type: "image"; data: string; mimeType: string } | { type: "text"; text: string }> {
   const content: Array<{ type: "image"; data: string; mimeType: string } | { type: "text"; text: string }> = [];
-  let skipped = 0;
   for (const img of images) {
-    const b64 = img.data.toString("base64");
-    if (b64.length <= MAX_INLINE_BASE64) {
-      content.push({ type: "image", data: b64, mimeType: img.mimeType });
-    } else {
-      skipped++;
-    }
+    content.push({ type: "image", data: img.data.toString("base64"), mimeType: img.mimeType });
   }
-  const info: Record<string, unknown> = { success: true, filePaths: paths, ...extra };
-  if (skipped > 0) {
-    info.note = `${skipped} image(s) too large for inline preview. Open file(s) directly.`;
-  }
-  content.push({ type: "text", text: JSON.stringify(info) });
+  content.push({ type: "text", text: JSON.stringify({ success: true, filePaths: paths, ...extra }) });
   return content;
 }
 
 const server = new McpServer({
   name: "imgx",
-  version: "0.8.0",
+  version: "0.8.1",
 });
 
 // プロバイダ初期化

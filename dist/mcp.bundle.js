@@ -69273,9 +69273,7 @@ function fallbackOutputDir(outputDir) {
 }
 function saveImage(image, outputPath, outputDir) {
   const ext = MIME_TO_EXT[image.mimeType] || ".png";
-  const resolvedDir = fallbackOutputDir(outputDir);
-  const filePath = outputPath ? resolve2(outputPath) : resolve2(resolvedDir, `imgx-${randomUUID().slice(0, 8)}${ext}`);
-  console.error(`[imgx-debug] homedir=${homedir2()} cwd=${process.cwd()} outputPath=${outputPath} outputDir=${outputDir} resolvedDir=${resolvedDir} filePath=${filePath}`);
+  const filePath = outputPath ? resolve2(outputPath) : resolve2(fallbackOutputDir(outputDir), `imgx-${randomUUID().slice(0, 8)}${ext}`);
   mkdirSync2(dirname(filePath), { recursive: true });
   writeFileSync2(filePath, image.data);
   return filePath;
@@ -69599,28 +69597,17 @@ function initOpenAI() {
 }
 
 // build/mcp/server.js
-var MAX_INLINE_BASE64 = 8e5;
 function buildImageContent(images, paths, extra) {
   const content = [];
-  let skipped = 0;
   for (const img of images) {
-    const b64 = img.data.toString("base64");
-    if (b64.length <= MAX_INLINE_BASE64) {
-      content.push({ type: "image", data: b64, mimeType: img.mimeType });
-    } else {
-      skipped++;
-    }
+    content.push({ type: "image", data: img.data.toString("base64"), mimeType: img.mimeType });
   }
-  const info = { success: true, filePaths: paths, ...extra };
-  if (skipped > 0) {
-    info.note = `${skipped} image(s) too large for inline preview. Open file(s) directly.`;
-  }
-  content.push({ type: "text", text: JSON.stringify(info) });
+  content.push({ type: "text", text: JSON.stringify({ success: true, filePaths: paths, ...extra }) });
   return content;
 }
 var server = new McpServer({
   name: "imgx",
-  version: "0.8.0"
+  version: "0.8.1"
 });
 initGemini();
 initOpenAI();

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1 (2026-02-27)
+
+### Changed
+
+- Remove MCP inline preview size guard — always include base64 image data in MCP responses regardless of size. MCP clients that support `type: "image"` content (e.g. Claude Desktop) will display inline; others will use the file path from the text content. Gemini-generated images (~900KB raw, ~1.2MB base64) exceed Claude Desktop's 1MB limit but the file path fallback ensures usability.
+
 ## 0.8.0 (2026-02-27)
 
 ### Fixed

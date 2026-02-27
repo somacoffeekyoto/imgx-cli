@@ -2,7 +2,7 @@
   "name": "imgx-cli",
   "displayName": "imgx-cli",
   "description": "AI image generation and editing CLI with provider abstraction",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "author": {
     "name": "SOMA COFFEE KYOTO"
   },

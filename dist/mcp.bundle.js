@@ -69592,9 +69592,17 @@ function initOpenAI() {
 }
 
 // build/mcp/server.js
+function buildImageContent(images, paths, extra) {
+  const content = [];
+  for (const img of images) {
+    content.push({ type: "image", data: img.data.toString("base64"), mimeType: img.mimeType });
+  }
+  content.push({ type: "text", text: JSON.stringify({ success: true, filePaths: paths, ...extra }) });
+  return content;
+}
 var server = new McpServer({
   name: "imgx",
-  version: "0.6.1"
+  version: "0.6.2"
 });
 initGemini();
 initOpenAI();
@@ -69636,9 +69644,7 @@ server.tool("generate_image", "Generate an image from a text prompt", {
       paths.push(saved);
     }
     saveLastOutput(paths);
-    return {
-      content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: paths }) }]
-    };
+    return { content: buildImageContent(result.images, paths) };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { content: [{ type: "text", text: `Error: ${msg}` }] };
@@ -69673,9 +69679,7 @@ server.tool("edit_image", "Edit an existing image with text instructions", {
     }
     const saved = saveImage(result.images[0], args.output, args.output_dir);
     saveLastOutput([saved]);
-    return {
-      content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved] }) }]
-    };
+    return { content: buildImageContent(result.images, [saved]) };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { content: [{ type: "text", text: `Error: ${msg}` }] };
@@ -69715,9 +69719,7 @@ server.tool("edit_last", "Edit the last generated/edited image with new text ins
     }
     const saved = saveImage(result.images[0], args.output, args.output_dir);
     saveLastOutput([saved]);
-    return {
-      content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved], inputUsed: lastPaths[0] }) }]
-    };
+    return { content: buildImageContent(result.images, [saved], { inputUsed: lastPaths[0] }) };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { content: [{ type: "text", text: `Error: ${msg}` }] };

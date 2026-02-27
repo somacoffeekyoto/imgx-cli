@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.2 (2026-02-27)
+
+### Added
+
+- **Image preview in MCP responses** — MCP tool results now include inline image data (base64) alongside file paths. Claude Desktop and other MCP clients can display generated/edited images directly without opening files manually.
+
 ## 0.6.1 (2026-02-27)
 
 ### Fixed

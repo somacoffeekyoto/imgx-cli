@@ -6,11 +6,25 @@ import { initOpenAI } from "../providers/openai/index.js";
 import { getProvider, listProviders } from "../core/registry.js";
 import { saveImage } from "../core/storage.js";
 import { saveLastOutput, loadLastOutput } from "../core/config.js";
-import type { GenerateInput, EditInput } from "../core/types.js";
+import type { GenerateInput, EditInput, GeneratedImage } from "../core/types.js";
+
+/** Build MCP content array with image previews + file path info */
+function buildImageContent(
+  images: GeneratedImage[],
+  paths: string[],
+  extra?: Record<string, unknown>
+): Array<{ type: "image"; data: string; mimeType: string } | { type: "text"; text: string }> {
+  const content: Array<{ type: "image"; data: string; mimeType: string } | { type: "text"; text: string }> = [];
+  for (const img of images) {
+    content.push({ type: "image", data: img.data.toString("base64"), mimeType: img.mimeType });
+  }
+  content.push({ type: "text", text: JSON.stringify({ success: true, filePaths: paths, ...extra }) });
+  return content;
+}
 
 const server = new McpServer({
   name: "imgx",
-  version: "0.6.1",
+  version: "0.6.2",
 });
 
 // プロバイダ初期化
@@ -74,9 +88,7 @@ server.tool(
       }
 
       saveLastOutput(paths);
-      return {
-        content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: paths }) }],
-      };
+      return { content: buildImageContent(result.images, paths) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { content: [{ type: "text", text: `Error: ${msg}` }] };
@@ -125,9 +137,7 @@ server.tool(
 
       const saved = saveImage(result.images[0], args.output, args.output_dir);
       saveLastOutput([saved]);
-      return {
-        content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved] }) }],
-      };
+      return { content: buildImageContent(result.images, [saved]) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { content: [{ type: "text", text: `Error: ${msg}` }] };
@@ -182,9 +192,7 @@ server.tool(
 
       const saved = saveImage(result.images[0], args.output, args.output_dir);
       saveLastOutput([saved]);
-      return {
-        content: [{ type: "text", text: JSON.stringify({ success: true, filePaths: [saved], inputUsed: lastPaths[0] }) }],
-      };
+      return { content: buildImageContent(result.images, [saved], { inputUsed: lastPaths[0] }) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return { content: [{ type: "text", text: `Error: ${msg}` }] };

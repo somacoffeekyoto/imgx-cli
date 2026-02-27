@@ -43,9 +43,12 @@ export function saveImage(
 ): string {
   const ext = MIME_TO_EXT[image.mimeType] || ".png";
 
+  const resolvedDir = fallbackOutputDir(outputDir);
   const filePath = outputPath
     ? resolve(outputPath)
-    : resolve(fallbackOutputDir(outputDir), `imgx-${randomUUID().slice(0, 8)}${ext}`);
+    : resolve(resolvedDir, `imgx-${randomUUID().slice(0, 8)}${ext}`);
+
+  console.error(`[imgx-debug] homedir=${homedir()} cwd=${process.cwd()} outputPath=${outputPath} outputDir=${outputDir} resolvedDir=${resolvedDir} filePath=${filePath}`);
 
   mkdirSync(dirname(filePath), { recursive: true });
   writeFileSync(filePath, image.data);

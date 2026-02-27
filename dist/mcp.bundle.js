@@ -69273,7 +69273,9 @@ function fallbackOutputDir(outputDir) {
 }
 function saveImage(image, outputPath, outputDir) {
   const ext = MIME_TO_EXT[image.mimeType] || ".png";
-  const filePath = outputPath ? resolve2(outputPath) : resolve2(fallbackOutputDir(outputDir), `imgx-${randomUUID().slice(0, 8)}${ext}`);
+  const resolvedDir = fallbackOutputDir(outputDir);
+  const filePath = outputPath ? resolve2(outputPath) : resolve2(resolvedDir, `imgx-${randomUUID().slice(0, 8)}${ext}`);
+  console.error(`[imgx-debug] homedir=${homedir2()} cwd=${process.cwd()} outputPath=${outputPath} outputDir=${outputDir} resolvedDir=${resolvedDir} filePath=${filePath}`);
   mkdirSync2(dirname(filePath), { recursive: true });
   writeFileSync2(filePath, image.data);
   return filePath;

@@ -16,19 +16,50 @@ Generate and edit images using the imgx MCP tools. Gemini and OpenAI providers s
 
 ## Setup
 
-If the MCP tools (`generate_image`, `edit_image`, `edit_last`, `list_providers`) are not available, the user needs to configure an API key:
+If the MCP tools (`generate_image`, `edit_image`, `edit_last`, `list_providers`) are already available, skip this section.
 
-**Gemini** (default, free tier available): Get a key from [Google AI Studio](https://aistudio.google.com/apikey), then:
+### 1. Add MCP server
+
+Add imgx-mcp to the project's `.mcp.json` (create the file if it doesn't exist):
+
+```json
+{
+  "mcpServers": {
+    "imgx": {
+      "command": "npx",
+      "args": ["--package=imgx-mcp", "-y", "imgx-mcp"],
+      "env": { "GEMINI_API_KEY": "your-key" }
+    }
+  }
+}
+```
+
+On Windows, use `"command": "cmd"` and prepend `"/c"` to args:
+```json
+{
+  "mcpServers": {
+    "imgx": {
+      "command": "cmd",
+      "args": ["/c", "npx", "--package=imgx-mcp", "-y", "imgx-mcp"],
+      "env": { "GEMINI_API_KEY": "your-key" }
+    }
+  }
+}
+```
+
+After adding, restart Claude Code for the MCP server to connect.
+
+### 2. API key
+
+Get at least one API key:
+
+- **Gemini** (default, free tier available): [Google AI Studio](https://aistudio.google.com/apikey)
+- **OpenAI**: [OpenAI Platform](https://platform.openai.com/api-keys)
+
+Set the key in the `.mcp.json` env section (above), or via CLI:
 ```bash
 npx imgx-mcp config set api-key YOUR_KEY --provider gemini
 ```
-
-**OpenAI**: Get a key from [OpenAI Platform](https://platform.openai.com/api-keys), then:
-```bash
-npx imgx-mcp config set api-key YOUR_KEY --provider openai
-```
-
-Or set environment variables: `GEMINI_API_KEY`, `OPENAI_API_KEY`.
 
 ## MCP tools
 

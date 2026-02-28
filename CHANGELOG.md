@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.0 (2026-02-28)
+
+### Changed
+
+- **Renamed from `imgx-cli` to `imgx-mcp`** — reflects primary value as an MCP server for AI coding agents (Claude Code, Codex CLI, Cursor, etc.). CLI command remains `imgx`. npm package is now `imgx-mcp`.
+- Updated tagline: "AI image generation and editing for Claude Code, Codex CLI, and MCP-compatible AI agents"
+- All plugin manifests, registry entries, and documentation updated to `imgx-mcp`
+
+### Migration
+
+- `npm install -g imgx-mcp` (replaces `imgx-cli`)
+- MCP config: `--package=imgx-mcp` (replaces `--package=imgx-cli`)
+- Claude Code plugin: `somacoffeekyoto/imgx-mcp` (replaces `somacoffeekyoto/imgx-cli`)
+- GitHub repo: `somacoffeekyoto/imgx-mcp` (auto-redirect from old URL)
+
 ## 0.8.1 (2026-02-27)
 
 ### Changed

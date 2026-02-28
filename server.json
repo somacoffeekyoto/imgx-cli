@@ -3,15 +3,15 @@
   "name": "io.github.somacoffeekyoto/imgx",
   "description": "AI image generation and editing via CLI or MCP. Text-based editing, multi-provider.",
   "repository": {
-    "url": "https://github.com/somacoffeekyoto/imgx-cli",
+    "url": "https://github.com/somacoffeekyoto/imgx-mcp",
     "source": "github"
   },
-  "version": "0.8.1",
+  "version": "0.9.0",
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "imgx-cli",
-      "version": "0.8.1",
+      "identifier": "imgx-mcp",
+      "version": "0.9.0",
       "transport": {
         "type": "stdio"
       },

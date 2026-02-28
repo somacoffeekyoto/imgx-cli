@@ -1,14 +1,14 @@
-# imgx-cli
+# imgx-mcp
 
-AI image generation and editing from the terminal. Provider-agnostic design with capability-based abstraction.
+AI image generation and editing for Claude Code, Codex CLI, and MCP-compatible AI agents. Provider-agnostic design with capability-based abstraction.
 
 ## Install
 
 ### As a Claude Code plugin
 
 ```
-/plugin marketplace add somacoffeekyoto/imgx-cli
-/plugin install imgx-cli@somacoffeekyoto-imgx-cli
+/plugin marketplace add somacoffeekyoto/imgx-mcp
+/plugin install imgx-mcp@somacoffeekyoto-imgx-mcp
 ```
 
 After installation, restart Claude Code. The `image-generation` skill becomes available — Claude Code can generate and edit images via natural language instructions.
@@ -20,14 +20,14 @@ After installation, restart Claude Code. The `image-generation` skill becomes av
 You can try updating via the plugin manager:
 
 ```
-/plugin update → select "installed" → imgx-cli → update
+/plugin update → select "installed" → imgx-mcp → update
 ```
 
 If the update shows no changes or the plugin doesn't reflect the latest version, uninstall and reinstall:
 
 ```
-/plugin uninstall imgx-cli@somacoffeekyoto-imgx-cli
-/plugin install imgx-cli@somacoffeekyoto-imgx-cli
+/plugin uninstall imgx-mcp@somacoffeekyoto-imgx-mcp
+/plugin install imgx-mcp@somacoffeekyoto-imgx-mcp
 ```
 
 Then restart Claude Code.
@@ -35,13 +35,13 @@ Then restart Claude Code.
 #### Standalone CLI
 
 ```bash
-npm update -g imgx-cli
+npm update -g imgx-mcp
 ```
 
 ### As a standalone CLI
 
 ```bash
-npm install -g imgx-cli
+npm install -g imgx-mcp
 ```
 
 Requires Node.js 18+.
@@ -217,7 +217,7 @@ Add to your tool's MCP config. The `env` section is optional if you have already
   "mcpServers": {
     "imgx": {
       "command": "npx",
-      "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
+      "args": ["--package=imgx-mcp", "-y", "imgx-mcp"],
       "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
@@ -235,7 +235,7 @@ Or install as a [Claude Code plugin](#install) for automatic MCP registration.
   "mcpServers": {
     "imgx": {
       "command": "npx",
-      "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
+      "args": ["--package=imgx-mcp", "-y", "imgx-mcp"],
       "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
@@ -251,7 +251,7 @@ macOS / Linux:
   "mcpServers": {
     "imgx": {
       "command": "npx",
-      "args": ["--package=imgx-cli", "-y", "imgx-mcp"],
+      "args": ["--package=imgx-mcp", "-y", "imgx-mcp"],
       "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
@@ -265,7 +265,7 @@ Windows:
   "mcpServers": {
     "imgx": {
       "command": "cmd",
-      "args": ["/c", "npx", "--package=imgx-cli", "-y", "imgx-mcp"],
+      "args": ["/c", "npx", "--package=imgx-mcp", "-y", "imgx-mcp"],
       "env": { "GEMINI_API_KEY": "your-key", "OPENAI_API_KEY": "your-key" }
     }
   }
@@ -281,7 +281,7 @@ Config file location: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or
 ```toml
 [mcp_servers.imgx]
 command = "npx"
-args = ["--package=imgx-cli", "-y", "imgx-mcp"]
+args = ["--package=imgx-mcp", "-y", "imgx-mcp"]
 env = { GEMINI_API_KEY = "your-key", OPENAI_API_KEY = "your-key" }
 ```
 
@@ -328,8 +328,8 @@ Each provider declares its supported capabilities. The CLI dynamically enables o
 ## Development
 
 ```bash
-git clone https://github.com/somacoffeekyoto/imgx-cli.git
-cd imgx-cli
+git clone https://github.com/somacoffeekyoto/imgx-mcp.git
+cd imgx-mcp
 npm install
 npm run bundle    # TypeScript compile + esbuild bundle
 ```
@@ -344,14 +344,14 @@ The build produces two bundles:
 ### Claude Code plugin
 
 ```
-/plugin uninstall imgx-cli@somacoffeekyoto-imgx-cli
-/plugin marketplace remove somacoffeekyoto-imgx-cli
+/plugin uninstall imgx-mcp@somacoffeekyoto-imgx-mcp
+/plugin marketplace remove somacoffeekyoto-imgx-mcp
 ```
 
 ### Standalone CLI
 
 ```bash
-npm uninstall -g imgx-cli
+npm uninstall -g imgx-mcp
 ```
 
 ### MCP server
@@ -374,6 +374,6 @@ MIT — [SOMA COFFEE KYOTO](https://github.com/somacoffeekyoto)
 
 ## Links
 
-- [GitHub](https://github.com/somacoffeekyoto/imgx-cli)
+- [GitHub](https://github.com/somacoffeekyoto/imgx-mcp)
 - [SOMA COFFEE KYOTO](https://somacoffee.net)
 - [X (@somacoffeekyoto)](https://x.com/somacoffeekyoto)

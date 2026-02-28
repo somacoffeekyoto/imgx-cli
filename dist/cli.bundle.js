@@ -39776,8 +39776,8 @@ function showAll() {
 }
 
 // build/cli/index.js
-var VERSION2 = "0.8.1";
-var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing CLI
+var VERSION2 = "0.9.0";
+var HELP = `imgx v${VERSION2} \u2014 AI image generation and editing for MCP-compatible AI agents
 
 Commands:
   generate      Generate image from text prompt

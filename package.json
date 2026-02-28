@@ -1,8 +1,8 @@
 {
-  "name": "imgx-cli",
-  "version": "0.8.1",
+  "name": "imgx-mcp",
+  "version": "0.9.0",
   "mcpName": "io.github.somacoffeekyoto/imgx",
-  "description": "AI image generation and editing CLI with provider abstraction",
+  "description": "AI image generation and editing for Claude Code, Codex CLI, and MCP-compatible AI agents",
   "type": "module",
   "bin": {
     "imgx": "dist/cli.bundle.js",
@@ -19,17 +19,18 @@
     "gemini",
     "openai",
     "ai",
-    "cli"
+    "cli",
+    "mcp"
   ],
   "author": "SOMA COFFEE KYOTO",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/somacoffeekyoto/imgx-cli.git"
+    "url": "git+https://github.com/somacoffeekyoto/imgx-mcp.git"
   },
-  "homepage": "https://github.com/somacoffeekyoto/imgx-cli",
+  "homepage": "https://github.com/somacoffeekyoto/imgx-mcp",
   "bugs": {
-    "url": "https://github.com/somacoffeekyoto/imgx-cli/issues"
+    "url": "https://github.com/somacoffeekyoto/imgx-mcp/issues"
   },
   "files": [
     "dist/cli.bundle.js",

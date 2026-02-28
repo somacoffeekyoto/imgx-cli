@@ -2,7 +2,7 @@
 
 ## Plugin structure
 
-imgx-cli doubles as an AI coding tool plugin. The repository contains:
+imgx-mcp doubles as an AI coding tool plugin. The repository contains:
 
 ```
 .claude-plugin/
@@ -24,7 +24,7 @@ dist/
 ### Plugin configuration files
 
 - **`.claude-plugin/plugin.json`** — Plugin identity. Fields: `name`, `description`, `version`, `author`. No `category` field (that belongs in `marketplace.json` only).
-- **`.claude-plugin/marketplace.json`** — Marketplace wrapper. The `source` field must use URL format for self-referencing repositories: `"source": "url"`, `"url": "https://github.com/somacoffeekyoto/imgx-cli.git"`.
+- **`.claude-plugin/marketplace.json`** — Marketplace wrapper. The `source` field must use URL format for self-referencing repositories: `"source": "url"`, `"url": "https://github.com/somacoffeekyoto/imgx-mcp.git"`.
 - **`skills/image-generation/SKILL.md`** — Uses `${CLAUDE_PLUGIN_ROOT}` variable for portable CLI paths. Frontmatter (`name`, `description`) is required for skill registration.
 
 ## Release checklist
@@ -62,8 +62,8 @@ npm publish --access public --otp=YOUR_OTP
 
 | Channel | How to verify |
 |---------|--------------|
-| npm | `npm info imgx-cli version` |
+| npm | `npm info imgx-mcp version` |
 | MCP Registry | `./mcp-publisher publish` succeeds with new version |
 | PulseMCP | Auto-ingested from MCP Registry (daily/weekly) |
 | Claude Code plugin | Users reinstall to get latest git |
-| Claude Desktop | `npx imgx-cli@latest` fetches new version on next launch |
+| Claude Desktop | `npx imgx-mcp@latest` fetches new version on next launch |

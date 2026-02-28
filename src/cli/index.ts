@@ -10,9 +10,9 @@ import { runEdit } from "./commands/edit.js";
 import { runConfig } from "./commands/config.js";
 import * as out from "./output.js";
 
-const VERSION = "0.8.1";
+const VERSION = "0.9.0";
 
-const HELP = `imgx v${VERSION} — AI image generation and editing CLI
+const HELP = `imgx v${VERSION} — AI image generation and editing for MCP-compatible AI agents
 
 Commands:
   generate      Generate image from text prompt

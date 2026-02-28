@@ -20,32 +20,43 @@
 
 ### Capabilities
 
-All 7 capabilities supported:
+| Capability | MCP parameter | Description |
+|------------|---------------|-------------|
+| TEXT_TO_IMAGE | (default) | Generate from text |
+| IMAGE_EDITING | `input` | Edit with text instructions |
+| ASPECT_RATIO | `aspect_ratio` | 7 ratios: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `9:16`, `16:9` |
+| RESOLUTION_CONTROL | `resolution` | `1K`, `2K`, `4K` |
+| REFERENCE_IMAGES | — | Use reference images (future) |
+| PERSON_CONTROL | — | Control person generation (future) |
 
-| Capability | Description | CLI flag |
-|------------|-------------|----------|
-| TEXT_TO_IMAGE | Generate from text | (default behavior) |
-| IMAGE_EDITING | Edit with text instructions | `edit` command |
-| ASPECT_RATIO | Control aspect ratio | `--aspect-ratio` |
-| RESOLUTION_CONTROL | Control output resolution | `--resolution` |
-| MULTIPLE_OUTPUTS | Generate multiple images | `--count` |
-| REFERENCE_IMAGES | Use reference images | `--reference` (future) |
-| PERSON_CONTROL | Control person generation | `--person` (future) |
+## OpenAI
 
-### Aspect ratios
+| Item | Value |
+|------|-------|
+| Provider name | `openai` |
+| Default model | `gpt-image-1` |
+| API key env var | `OPENAI_API_KEY` |
 
-`1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `9:16`, `16:9`
+### Capabilities
 
-### Resolutions
+| Capability | MCP parameter | Description |
+|------------|---------------|-------------|
+| TEXT_TO_IMAGE | (default) | Generate from text |
+| IMAGE_EDITING | `input` | Edit with text instructions |
+| ASPECT_RATIO | `aspect_ratio` | 7 ratios: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `9:16`, `16:9` |
+| MULTIPLE_OUTPUTS | `count` | Generate up to 4 images per request |
+| OUTPUT_FORMAT | — | PNG, JPEG, WebP (via CLI `--format`) |
 
-| Value | Approximate size |
-|-------|-----------------|
-| `1K` | ~1024px on longest side |
-| `2K` | ~2048px on longest side |
-| `4K` | ~4096px on longest side |
+### Provider comparison
 
-## Adding new providers (future)
+| Feature | Gemini | OpenAI |
+|---------|--------|--------|
+| Edit (text-only, no mask) | Yes | Yes |
+| Resolution control | Yes (1K/2K/4K) | No |
+| Multiple outputs | No | Yes (up to 4) |
+| Output format selection | No (PNG only) | Yes (PNG/JPEG/WebP) |
+| Iterative editing (`edit_last`) | Yes | Yes |
 
-Providers implement the `ImageProvider` interface and register via the provider registry. Each provider declares its supported capabilities. The CLI dynamically enables/disables options based on the active provider's capabilities.
+## Adding new providers
 
-Planned providers: DALL-E, Stable Diffusion.
+Providers implement the `ImageProvider` interface and register via the provider registry. Each provider declares its supported capabilities. The MCP server and CLI dynamically enable/disable options based on the active provider's capabilities.

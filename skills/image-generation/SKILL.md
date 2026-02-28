@@ -1,128 +1,137 @@
 ---
 name: image-generation
-description: Generates and edits AI images using Google Gemini. Use when images need to be created or modified.
-tools: Bash
+description: Generate and edit AI images using Gemini or OpenAI. Text-to-image, text-based editing, iterative refinement.
 ---
 
-# Image Generation & Editing Skill
+# Image Generation & Editing
 
-Generate and edit AI images using imgx CLI.
+Generate and edit images using the imgx MCP tools. Gemini and OpenAI providers supported.
 
-## When to use this skill
+## When to use
 
 - User asks to create, generate, or make an image
 - User asks to edit, modify, or change an existing image
-- User needs a cover image, diagram, screenshot, or visual asset
-- User says "generate an image of..." or "edit this image to..."
+- User needs a cover image, diagram, icon, or visual asset
+- User wants to refine an image iteratively ("make it darker", "change the background")
 
-Do NOT use this skill for non-image tasks (text generation, code generation, etc.).
+## Setup
 
-## Generate image from text
+If the MCP tools (`generate_image`, `edit_image`, `edit_last`, `list_providers`) are not available, the user needs to configure an API key:
 
+**Gemini** (default, free tier available): Get a key from [Google AI Studio](https://aistudio.google.com/apikey), then:
 ```bash
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" generate \
-  --prompt "Your detailed image description" \
-  --output "./path/to/output.png" \
-  --aspect-ratio "16:9" \
-  --model "gemini-3-pro-image-preview"
+npx imgx-mcp config set api-key YOUR_KEY --provider gemini
 ```
 
-## Edit existing image
-
+**OpenAI**: Get a key from [OpenAI Platform](https://platform.openai.com/api-keys), then:
 ```bash
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" edit \
-  --input "./path/to/source.png" \
-  --prompt "Change the background to cream color" \
-  --output "./path/to/edited.png"
+npx imgx-mcp config set api-key YOUR_KEY --provider openai
 ```
 
-## Edit last output (iterative editing)
-
-Use `--last` to automatically use the previous output as input:
-
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" edit \
-  --last \
-  --prompt "Make the text larger" \
-  --output "./final.png"
-```
-
-This works after any `generate` or `edit` command. Useful for refining results step by step.
-
-## Examples
-
-**Blog cover image:**
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" generate \
-  -p "A developer's desk with a laptop showing terminal output, coffee cup beside it, warm morning light, earth tones" \
-  -o "./covers/blog-post-cover.png" -a "16:9" -r "2K"
-```
-
-**Edit to change style:**
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" edit \
-  -i "./covers/blog-post-cover.png" \
-  -p "Make the color palette warmer, add slight vignette" \
-  -o "./covers/blog-post-cover-v2.png"
-```
-
-**Generate multiple variants:**
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" generate \
-  -p "Minimalist coffee bean icon on white background" \
-  -o "./icons/bean.png" -a "1:1" -n 3
-```
-
-## Parameters
-
-| Flag | Short | Required | Description |
-|------|-------|----------|-------------|
-| --prompt | -p | Yes | Image description or edit instruction |
-| --output | -o | No | Output file path (auto-generated if omitted) |
-| --input | -i | edit only | Input image to edit |
-| --last | -l | No | Use last output as input (edit only) |
-| --aspect-ratio | -a | No | 1:1, 16:9, 9:16, 4:3, 3:4, 2:3, 3:2 |
-| --resolution | -r | No | 1K, 2K, 4K |
-| --count | -n | No | Number of images to generate |
-| --model | -m | No | Model (default: gemini-3-pro-image-preview) |
-| --provider | | No | Provider (default: gemini) |
-| --output-dir | -d | No | Output directory |
-
-## Other commands
-
-```bash
-# List providers and capabilities
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" providers
-node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" capabilities
-```
-
-## Output
-
-JSON format:
-```json
-{"success": true, "filePaths": ["./output.png"]}
-```
-
-On error:
-```json
-{"success": false, "error": "error message"}
-```
-
-Always check the `success` field. If `false`, show the error message to the user.
+Or set environment variables: `GEMINI_API_KEY`, `OPENAI_API_KEY`.
 
 ## MCP tools
 
-This plugin also registers an MCP server with the following tools. These are available to Claude Code directly without using Bash:
+Use these tools directly. No Bash needed.
 
-| Tool | Description |
-|------|-------------|
-| `generate_image` | Generate an image from a text prompt |
-| `edit_image` | Edit an existing image with text instructions |
-| `edit_last` | Edit the last generated/edited image (no input path needed) |
-| `list_providers` | List available providers and capabilities |
+### generate_image
 
-The MCP tools accept the same parameters as the CLI. Use MCP tools when available; fall back to CLI via Bash if MCP is not connected.
+Generate an image from a text prompt.
 
-## Environment
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `prompt` | Yes | Image description |
+| `aspect_ratio` | No | `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `2:3`, `3:2` |
+| `resolution` | No | `1K`, `2K`, `4K` |
+| `count` | No | Number of images (OpenAI only) |
+| `model` | No | Model name |
+| `provider` | No | `gemini` (default) or `openai` |
+| `output` | No | Output file path |
+| `output_dir` | No | Output directory |
 
-Requires `GEMINI_API_KEY`. Set via environment variable or `imgx config set api-key`.
+### edit_image
+
+Edit an existing image with text instructions. No mask needed — the model determines what to change from the text.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `input` | Yes | Path to the image to edit |
+| `prompt` | Yes | Edit instruction |
+| `aspect_ratio` | No | Output aspect ratio |
+| `resolution` | No | Output resolution |
+| `output` | No | Output file path |
+
+### edit_last
+
+Edit the last generated or edited image. No input path needed — automatically uses the previous output.
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `prompt` | Yes | Edit instruction |
+| `aspect_ratio` | No | Output aspect ratio |
+| `resolution` | No | Output resolution |
+| `output` | No | Output file path |
+
+### list_providers
+
+List available providers and their capabilities. No parameters.
+
+## Practical workflows
+
+### Blog cover image
+
+```
+1. generate_image: prompt="A developer's desk with laptop showing terminal, coffee cup, warm morning light" aspect_ratio="16:9" resolution="2K"
+2. Review the result with the user
+3. edit_last: prompt="Make the color palette warmer" (if user wants changes)
+4. edit_last: prompt="Add subtle vignette effect" (further refinement)
+```
+
+### Iterative refinement
+
+The `edit_last` tool is the key to conversational image editing. Each call takes the previous output as input:
+
+```
+generate_image → edit_last → edit_last → edit_last → done
+```
+
+Tell the user what was generated, ask if they want changes, and use `edit_last` to apply them. This is the most natural workflow.
+
+### Comparing providers
+
+Generate the same prompt with different providers to let the user choose:
+
+```
+1. generate_image: prompt="..." provider="gemini"
+2. generate_image: prompt="..." provider="openai"
+3. Show both results. User picks their preferred version
+4. edit_last to refine the chosen one (note: edit_last uses the most recent output)
+```
+
+### Icon or logo variations
+
+```
+1. generate_image: prompt="Minimalist coffee bean icon, white background" aspect_ratio="1:1" count=3
+   (count works with OpenAI provider only)
+2. For Gemini, generate multiple times with slight prompt variations
+```
+
+## Tips
+
+- **Be specific in prompts**: "A wooden table with a ceramic pour-over dripper, steam rising, soft natural light from left" works better than "coffee scene"
+- **Use edit_last for iteration**: Don't ask the user to specify file paths. Just use `edit_last` after any generation or edit
+- **Check provider capabilities**: Use `list_providers` if unsure what a provider supports
+- **Default output**: Images save to `~/Pictures/imgx/` with auto-generated filenames. Use `output` or `output_dir` to customize
+- **Inline preview**: MCP responses include base64 image data for inline display in supported clients
+
+## CLI fallback
+
+If MCP tools are not available (MCP server not configured), fall back to CLI via Bash:
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" generate -p "prompt" -o output.png
+node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" edit -i input.png -p "edit instruction"
+node "${CLAUDE_PLUGIN_ROOT}/dist/cli.bundle.js" edit --last -p "refine further"
+```
+
+See [providers reference](references/providers.md) for detailed provider capabilities.
